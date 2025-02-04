@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
+#include <unistd.h>    // fork, execl
+#include <sys/types.h> // pid_t datatype
+#include <sys/wait.h>  // wait
+#include <errno.h>     // errno
 
 // ** Commands for compiling and running **
 // gcc simpleshell.c helpers.c -pedantic -Wall -o simpleshell
@@ -32,8 +36,8 @@ void prompt()
     // loops through line string breaking it into smaller strings until end of line
     while (token != NULL)
     {
-      // this print shows tolkens 
-      //printf("%s", token);
+      // this print shows tolkens
+      // printf("%s", token);
       token = strtok(NULL, " \t|><&;");
     }
 
@@ -44,9 +48,35 @@ void prompt()
     {
       exit = 1;
     }
+
+    // else ask operating system for command
+    else
+    {
+
+      // fork
+      pid_t p = fork();
+
+      // if < 0 then error happened
+      if (p < 0){
+        printf("Now errno = %d\n", errno);
+      }
+      // child process
+      else if (0 == p)
+      {
+        // execvp expects contant argument for token
+        execvp("simpleshell.c", token);
+        printf("Now errno = %d\n", errno);
+      
+        
+      }
+      // parent process (wait for child)
+      else
+      {
+        wait(NULL);
+      }
+    }
   }
 
-  
   // exit confirmation message
   printf("yay u left\n");
 }

@@ -3,8 +3,8 @@
 #include "header.h"
 
 // ** Commands for compiling and running **
-// gcc simpleshell.c -pedantic -Wall -o simpleshell
-/// simpleshell
+// gcc simpleshell.c helpers.c -pedantic -Wall -o simpleshell
+/// ./simpleshell
 
 // Coded together as a full group
 // Prompt function prints £: and takes user input
@@ -26,23 +26,27 @@ void prompt()
     // take in user input
     char *line = fgets(input, sizeof(input), stdin);
 
-    // if User input is "exit" or ^D is pressed(therefor line is NULL)then done looping
-    if (str_cmp(input, exitstr) == 0 || line == NULL)
-    {
-      exit = 1;
-    }
-
     // tolkenises the line string by provided delimeters e.g (" \t|><&;")
     char *token = strtok(line, " \t|><&;");
 
     // loops through line string breaking it into smaller strings until end of line
     while (token != NULL)
     {
-      // this print f causes issue with spacing of second £: onwards
-      printf("%s", token);
+      // this print shows tolkens 
+      //printf("%s", token);
       token = strtok(NULL, " \t|><&;");
     }
+
+    // trim whitespace from input
+    char *trminput = str_trim(input);
+    // if User input is "exit" or ^D is pressed(therefor line is NULL)then done looping
+    if (str_cmp(trminput, exitstr) == 0 || line == NULL)
+    {
+      exit = 1;
+    }
   }
+
+  
   // exit confirmation message
   printf("yay u left\n");
 }

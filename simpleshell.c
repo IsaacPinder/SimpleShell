@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "header.h"
 #include <unistd.h>    // fork, execl
@@ -17,36 +18,51 @@
 void prompt()
 {
   // int exit to for use in main loop to determine if we should continue running
-  int exit = 0;
+  int exitloop = 0;
   // pointer to string for use with str_cmp to compare input to "exit"
   char *exitstr = "exit\n";
 
   // main loop continue while exit != 1
-  while (exit == 0)
+  while (exitloop == 0)
   {
     printf("£: ");
     // buffer to take in input
     char input[512];
+    // array to hold tokens
+    char *tokensarr[50];
     // take in user input
     char *line = fgets(input, sizeof(input), stdin);
 
     // tolkenises the line string by provided delimeters e.g (" \t|><&;")
-    char *token = strtok(line, " \t|><&;");
+    char *token = strtok(line, " \t|><&;\n");
 
-    // loops through line string breaking it into smaller strings until end of line
+    // token index to fill array
+    int toki = 0;
+    // loops through line string breaking it into smaller strings until end of line and stores in array
     while (token != NULL)
     {
+      // store token in array
+      tokensarr[toki] = token;
+
       // this print shows tolkens
       // printf("%s", token);
-      token = strtok(NULL, " \t|><&;");
+
+      // go to next token
+      token = strtok(NULL, " \t|><&;\n");
+
+      // increment array
+      toki += 1;
     }
+    // make final array item NULL
+    tokensarr[toki] = NULL;
 
     // trim whitespace from input
-    char *trminput = str_trim(input);
-    // if User input is "exit" or ^D is pressed(therefor line is NULL)then done looping
-    if (str_cmp(trminput, exitstr) == 0 || line == NULL)
+    // char *trminput = str_trim(input);
+    // if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+
+    if (line == NULL || ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL))
     {
-      exit = 1;
+      exitloop = 1;
     }
 
     // else ask operating system for command
@@ -57,17 +73,20 @@ void prompt()
       pid_t p = fork();
 
       // if < 0 then error happened
-      if (p < 0){
-        printf("Now errno = %d\n", errno);
+      if (p < 0)
+      {
+        printf("error forking errno = %d\n", errno);
+        exit(1);
       }
       // child process
       else if (0 == p)
       {
-        // execvp expects contant argument for token
-        execvp("simpleshell.c", token);
-        printf("Now errno = %d\n", errno);
-      
-        
+        // execvp takes tokens
+        execvp(tokensarr[0], tokensarr);
+        // print error
+        perror(tokensarr[0]);
+        // exit
+        exit(1);
       }
       // parent process (wait for child)
       else

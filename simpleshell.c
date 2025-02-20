@@ -18,14 +18,17 @@ void prompt()
 {
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
-  // pointer to string for use with str_cmp to compare input to "exit"
+  // pointer to strings for use with str_cmp to compare input to
   char *exitstr = "exit";
   char *getpathstr = "getpath";
   char *setpathstr = "setpath";
+  char *cdstr = "cd";
 
-  // char *originDir = getenv("HOME");
-  // printf("\nHomeDir : %s \n\n", originDir);
-  // printf(" chdir success? 0 good: %d \n\n" , chdir(originDir));
+  // save Home directory
+  char *originDir = getenv("HOME");
+  // print home and success status of changing to home
+  printf("\nHomeDir : %s \n\n", originDir);
+  printf(" chdir to home success? 0 good: %d \n\n", chdir(originDir));
 
   // malloc space for original path then copy the path into that space
   char *origPath = malloc(sizeof(str_len(getenv("PATH"))));
@@ -72,13 +75,13 @@ void prompt()
     // trim whitespace from input
     // char *trminput = str_trim(input);
 
-    // EXIT if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+    // EXIT: if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
 
     if (line == NULL || ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL))
     {
       exitloop = 1;
     }
-    // GETPATH checking input isn't empty AND first token is "getpath"
+    // GETPATH: checking input isn't empty AND first token is "getpath"
     else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], getpathstr) == 0)
     {
       // if too many arguments (2nd token not empty) print error
@@ -92,7 +95,7 @@ void prompt()
         printf("current path: \n %s\n", get_path());
       }
     }
-    // SETPATH checking input isnt empty AND first token is "setpath"
+    // SETPATH: checking input isnt empty AND first token is "setpath"
     else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], setpathstr) == 0)
     {
       // if no path argument (2nd token empty) print error
@@ -113,6 +116,27 @@ void prompt()
         set_path(tokensarr[1]);
         // print path
         printf("setting path: \n %s\n", tokensarr[1]);
+      }
+    }
+    // CD: checking input isnt empty AND first token is "cd"
+    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], cdstr) == 0)
+    {
+      // if no arguments (2nd token empty) change to home directory
+      if (tokensarr[1] == NULL)
+      {
+        // set directory to home directory
+        chdir(originDir);
+      }
+       // else if 3rd token is not empty (too many arguments)
+       else if (tokensarr[2] != NULL)
+       {
+         // too many arguments
+         printf("ERROR there is too many arguments given, please amend your command\n");
+       }
+      // else change directory to paramter
+      else
+      {
+        change_directory(tokensarr[1]);
       }
     }
 

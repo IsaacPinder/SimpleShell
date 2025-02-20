@@ -23,17 +23,17 @@ void prompt()
   char *getpathstr = "getpath";
   char *setpathstr = "setpath";
 
-  //char *originDir = getenv("HOME");
-  //printf("\nHomeDir : %s \n\n", originDir);
- //printf(" chdir success? 0 good: %d \n\n" , chdir(originDir));
+  // char *originDir = getenv("HOME");
+  // printf("\nHomeDir : %s \n\n", originDir);
+  // printf(" chdir success? 0 good: %d \n\n" , chdir(originDir));
 
-  //malloc space for original path then copy the path into that space
-  char* origPath = malloc(sizeof(str_len(getenv("PATH"))));
-  strcpy(origPath,getenv("PATH"));
+  // malloc space for original path then copy the path into that space
+  char *origPath = malloc(sizeof(str_len(getenv("PATH"))));
+  strcpy(origPath, getenv("PATH"));
   printf("Original_Path : %s \n\n", origPath);
 
-  //comented to avoid no use error
-  //char* curPath =getenv("PATH");
+  // comented to avoid no use error
+  // char* curPath =getenv("PATH");
 
   // main loop continue while exit != 1
   while (exitloop == 0)
@@ -72,38 +72,52 @@ void prompt()
     // trim whitespace from input
     // char *trminput = str_trim(input);
 
-    // if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+    // EXIT if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
 
     if (line == NULL || ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL))
     {
       exitloop = 1;
     }
-    // checking input isn't empty AND first token is "getpath" and second token is empty
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], getpathstr) == 0 && tokensarr[1] == NULL){
-      printf("current path: \n %s\n", get_path());
+    // GETPATH checking input isn't empty AND first token is "getpath"
+    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], getpathstr) == 0)
+    {
+      // if too many arguments (2nd token not empty) print error
       if (tokensarr[1] != NULL)
-      //too many arguments
-      printf(ERROR there is too many arguments given please amend your command)
-    }
-    // checking input isnt empty AND first token is "setpath" AND 2nd token isnt empty(is a path) and 3rd token is EMPTY
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], setpathstr) == 0 && (tokensarr[1] != NULL && tokensarr[2] == NULL)){
-      printf("setting path: \n %s\n", tokensarr[1]);
-      set_path(tokensarr[1]);
-      
-      if(tokensarr[1] = NULL)
       {
-        //missing path
-        printf(ERROR there is no path given, Please enter a path);
-
-      if (tokenarrs[2] != NULL)
-        //too many arguments
-        printf(ERROR there is too many arguments given please amend your command);
+        printf("ERROR there is too many arguments given please amend your command\n");
       }
-
+      // else print path
+      else
+      {
+        printf("current path: \n %s\n", get_path());
+      }
+    }
+    // SETPATH checking input isnt empty AND first token is "setpath"
+    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], setpathstr) == 0)
+    {
+      // if no path argument (2nd token empty) print error
+      if (tokensarr[1] == NULL)
+      {
+        // missing path
+        printf("ERROR there is no path given, Please enter a path\n");
+      }
+      // else if 3rd token is not empty (too many arguments)
+      else if (tokensarr[2] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      // else set path
+      else
+      {
+        set_path(tokensarr[1]);
+        // print path
+        printf("setting path: \n %s\n", tokensarr[1]);
+      }
     }
 
     // else ask operating system for command
-    else 
+    else
     {
 
       // fork
@@ -133,14 +147,13 @@ void prompt()
     }
   }
 
+  // set currentpath to orignalpath then free malloch
+  set_path(origPath);
+  printf("path set on exit: \n %s\n", get_path());
+  free(origPath);
+  origPath = NULL;
 
-// set currentpath to orignalpath then free malloch
-set_path(origPath);
-printf("path set on exit: \n %s\n", get_path());
-free(origPath);
-origPath = NULL;
-
- // exit confirmation message
+  // exit confirmation message
   printf("yay u left\n");
 }
 

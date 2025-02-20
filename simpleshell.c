@@ -11,7 +11,6 @@
 // gcc simpleshell.c helpers.c localfunctions.c -pedantic -Wall -o simpleshell
 /// ./simpleshell
 
-// Coded together as a full group
 // Prompt function prints £: and takes user input
 // upon "exit" or ^D being entered shell will quit
 
@@ -20,9 +19,10 @@ void prompt()
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
   // pointer to string for use with str_cmp to compare input to "exit"
-  char *exitstr = "exit\n";
+  char *exitstr = "exit";
   char *getpathstr = "getpath";
   char *setpathstr = "setpath";
+
   //char *originDir = getenv("HOME");
   //printf("\nHomeDir : %s \n\n", originDir);
  //printf(" chdir success? 0 good: %d \n\n" , chdir(originDir));
@@ -32,7 +32,8 @@ void prompt()
   strcpy(origPath,getenv("PATH"));
   printf("Original_Path : %s \n\n", origPath);
 
-  char* curPath =getenv("PATH");
+  //comented to avoid no use error
+  //char* curPath =getenv("PATH");
 
   // main loop continue while exit != 1
   while (exitloop == 0)
@@ -82,7 +83,6 @@ void prompt()
       printf("current path: \n %s\n", get_path());
     }
     // checking input isnt empty AND first token is "setpath" AND 2nd token isnt empty(is a path) and 3rd token is EMPTY
-    // currently issue when inputing "set path" it takes path as second token and passes "path" as the path
     else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], setpathstr) == 0 && (tokensarr[1] != NULL && tokensarr[2] == NULL)){
       printf("setting path: \n %s\n", tokensarr[1]);
       set_path(tokensarr[1]);
@@ -121,7 +121,8 @@ void prompt()
 
 
 // set currentpath to orignalpath then free malloch
-printf("Original_Path set : 0 good? %d \n\n",setenv(curPath,origPath,1) );
+set_path(origPath);
+printf("path set on exit: \n %s\n", get_path());
 free(origPath);
 origPath = NULL;
 

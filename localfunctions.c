@@ -4,11 +4,10 @@
 #include "header.h"
 
 char * get_path(){
-   char* temppath = getenv("PATH");
    
-   return temppath;
+   return getenv("PATH");
    }
    
-   void set_path( char * Input){
+void set_path( char * Input){
      setenv("PATH",Input,1);
     }

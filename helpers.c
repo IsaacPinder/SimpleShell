@@ -27,6 +27,10 @@ int str_len(char *str)
 // function takes 2 pointers to 2 strings and returns 0 if they are equal
 int str_cmp(char *str1, char *str2)
 {
+  if (str_len(str1) != str_len(str2)){
+    return -1;
+  }
+  
   for (int i = 0; i < str_len(str1); i++)
   {
 
@@ -85,3 +89,4 @@ char *newpoint = str + startpos;
 
 return newpoint;
 }
+

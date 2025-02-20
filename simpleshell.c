@@ -81,11 +81,25 @@ void prompt()
     // checking input isn't empty AND first token is "getpath" and second token is empty
     else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], getpathstr) == 0 && tokensarr[1] == NULL){
       printf("current path: \n %s\n", get_path());
+      if (tokensarr[1] != NULL)
+      //too many arguments
+      printf(ERROR there is too many arguments given please amend your command)
     }
     // checking input isnt empty AND first token is "setpath" AND 2nd token isnt empty(is a path) and 3rd token is EMPTY
     else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], setpathstr) == 0 && (tokensarr[1] != NULL && tokensarr[2] == NULL)){
       printf("setting path: \n %s\n", tokensarr[1]);
       set_path(tokensarr[1]);
+      
+      if(tokensarr[1] = NULL)
+      {
+        //missing path
+        printf(ERROR there is no path given, Please enter a path);
+
+      if (tokenarrs[2] != NULL)
+        //too many arguments
+        printf(ERROR there is too many arguments given please amend your command);
+      }
+
     }
 
     // else ask operating system for command

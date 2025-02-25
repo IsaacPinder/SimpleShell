@@ -23,6 +23,16 @@ void prompt()
   char *getpathstr = "getpath";
   char *setpathstr = "setpath";
   char *cdstr = "cd";
+  char *histstr = "history";
+  char *execprevstr = "!!";
+  
+
+
+
+  // array to hold 20 history items
+  char* history[20];
+  // index of current command
+  int commandIndex = 0;
 
   // save Home directory
   char *originDir = getenv("HOME");
@@ -139,11 +149,49 @@ void prompt()
         change_directory(tokensarr[1]);
       }
     }
+    //HISTORY checking input isnt empty AND first token is "history"
+    else if((tokensarr[0] != NULL) && str_cmp(tokensarr[0], histstr) == 0){
+       if (tokensarr[2] != NULL)
+       {
+         // too many arguments
+         printf("ERROR there is too many arguments given, please amend your command\n");
+       }
+       else{
+        print_history(history,commandIndex);
+       }
+    }
+    //EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
+    else if((tokensarr[0] != NULL) && str_cmp(tokensarr[0], execprevstr) == 0){
+      if (tokensarr[2] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      else if(history[0] == NULL){
+         // no commands in history
+         printf("ERROR there is no commands in history, please execute some commands\n");
+      }
+      else{
+       execute_command(history,commandIndex);
+      }
+    }
+    //EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
+    else if((tokensarr[0] != NULL) && str_exec_num(tokensarr[0],commandIndex) >= 0){
+      // returns the number to execute
+      int num_to_exec = str_exec_num(tokensarr[0],commandIndex);
+      execute_command(history,num_to_exec);
+    }
+    //EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
+    else if((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0],commandIndex) >= 0){
+      // returns the number to execute
+      int num_to_exec = str_exec_num_minus(tokensarr[0],commandIndex);
+      execute_command(history,num_to_exec);
+    }
+
 
     // else ask operating system for command
     else
     {
-
       // fork
       pid_t p = fork();
 

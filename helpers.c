@@ -90,3 +90,26 @@ char *newpoint = str + startpos;
 return newpoint;
 }
 
+int str_exec_num(char* input1, int index){
+// make sure not to change index(make copy)
+// take an input check to make sure first char is '!'
+
+// if its '!' followed by a num directly then
+//  return the number aslong as 1 or 2 digits (<=19)
+
+// should check that number is not followed by any more chars
+// if failure then return -1
+
+}
+int str_exec_num_minus(char* input1, int index){
+// make sure not to change index(make copy)
+// take an input check to make sure first char is '!'
+// check second char is '-'
+//    note need to return (index - num) taking account for circular array
+//    return the number which follows '-' aslong as its 1 or 2 digit (<=19)
+
+
+// should check that number is not followed by any more chars
+// if failure then return -1
+}
+

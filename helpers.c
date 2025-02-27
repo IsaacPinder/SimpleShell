@@ -105,7 +105,6 @@ int str_exec_num(char* input, int index) {
             if (input[2] != '\0' && input[3] != '\0') {
                 return -1;
             }
-    // this case can handle negative making next atoi redunant make sure to optimize
             int n = atoi(input + 1);
             // so checks range of number without !
             if (n >= 1 && n <= 20) {

@@ -90,7 +90,7 @@ char *newpoint = str + startpos;
 return newpoint;
 }
 
-int str_exec_num(char* input1, int index){
+int str_exec_num(char* input1){
 // make sure not to change index(make copy)
 // take an input check to make sure first char is '!'
 
@@ -99,9 +99,9 @@ int str_exec_num(char* input1, int index){
 
 // should check that number is not followed by any more chars
 // if failure then return -1
-
+return 0;
 }
-int str_exec_num_minus(char* input1, int index){
+int str_exec_num_minus(char* input1,int index){
 // make sure not to change index(make copy)
 // take an input check to make sure first char is '!'
 // check second char is '-'
@@ -111,5 +111,10 @@ int str_exec_num_minus(char* input1, int index){
 
 // should check that number is not followed by any more chars
 // if failure then return -1
+return 0;
 }
 
+int add_history(char *histarr[], int commandIndex, char* command){
+  histarr[commandIndex] = command;
+   return commandIndex = (commandIndex + 1) % 20;
+}

@@ -90,20 +90,67 @@ char *newpoint = str + startpos;
 return newpoint;
 }
 
-int str_exec_num(char* input1, int index){
-// make sure not to change index(make copy)
-// take an input check to make sure first char is '!'
 
-// if its '!' followed by a num directly then
-//  return the number aslong as 1 or 2 digits (<=19)
-
-// should check that number is not followed by any more chars
-// if failure then return -1
-
+int str_exec_num(char* input, int index) {
+    if (input[0] == '!') {
+            // handle positive numbers
+            if (isdigit(input[1]) == 0) {
+                return -1;
+            }
+        
+            if (input[2] != '\0' && isdigit(input[2]) == 0) {
+                return -1;
+            }
+    
+            if (input[2] != '\0' && input[3] != '\0') {
+                return -1;
+            }
+    // this case can handle negative making next atoi redunant make sure to optimize
+            int n = atoi(input + 1);
+            // so checks range of number without !
+            if (n >= 1 && n <= 20) {
+                return n;
+            } else {
+                return -1;
+            }
+    } else {
+        return -1;
+    }
 }
+
 int str_exec_num_minus(char* input1, int index){
 // make sure not to change index(make copy)
 // take an input check to make sure first char is '!'
+
+if (input1[0] == '!'){
+  if (input1[1] == '-') {
+        if (isdigit(input1[2]) == 0) {
+            return -1;
+        }
+    
+        if (input1[3] != '\0' && isdigit(input1[3]) == 0) {
+            return -1;
+        }
+
+        if (input1[3] != '\0' && input1[4] != '\0') {
+            return -1;
+        }
+
+        int n = atoi(input1 + 1);
+        // so checks range of number without !
+        if (n <= -1 && n >= -20) {
+            return n;
+        } 
+        else {
+            return -1;
+        }
+        }
+        else {
+        return -1;
+    }
+    }
+    }
+
 // check second char is '-'
 //    note need to return (index - num) taking account for circular array
 //    return the number which follows '-' aslong as its 1 or 2 digit (<=19)
@@ -111,5 +158,3 @@ int str_exec_num_minus(char* input1, int index){
 
 // should check that number is not followed by any more chars
 // if failure then return -1
-}
-

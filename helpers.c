@@ -2,6 +2,7 @@
 #include <string.h>
 #include "header.h"
 #include <ctype.h>
+#include <stdlib.h>
 // Coded by Isaac during Semester 1 excercises
 // Function takes  pointer to string and returns int length
 int str_len(char *str)
@@ -139,8 +140,11 @@ if (input1[0] == '!'){
         // so checks range of number without !
         if (n <= -1 && n >= -20) {
             return index - n;
-            
-        for (expression 1; expression 2; expression 3) {
+
+      
+
+        }
+
   // code block to be executed
 }
 
@@ -152,8 +156,7 @@ if (input1[0] == '!'){
         else {
         return -1;
     }
-    }
-    }
+  
 
 // check second char is '-'
 //    note need to return (index - num) taking account for circular array

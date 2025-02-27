@@ -6,3 +6,5 @@ char *str_trim(char *str);
 char *get_path();
 void set_path(char *Input);
 void change_directory(char* dir);
+int str_exec_num_minus(char* input1, int index);
+int str_exec_num(char* input, int index);

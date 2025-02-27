@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
-
+#include <ctype.h>
 // Coded by Isaac during Semester 1 excercises
 // Function takes  pointer to string and returns int length
 int str_len(char *str)

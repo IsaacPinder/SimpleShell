@@ -90,7 +90,7 @@ char *newpoint = str + startpos;
 return newpoint;
 }
 
-
+// can fuse str_exec_num_minus into this 
 int str_exec_num(char* input, int index) {
     if (input[0] == '!') {
             // handle positive numbers

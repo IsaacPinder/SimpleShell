@@ -107,7 +107,7 @@ int str_exec_num(char* input, int index) {
             }
             int n = atoi(input + 1);
             // so checks range of number without !
-            if (n >= 1 && n <= 20) {
+            if (n >= 0 && n <= 19) {
                 return n;
             } else {
                 return -1;
@@ -138,7 +138,12 @@ if (input1[0] == '!'){
         int n = atoi(input1 + 1);
         // so checks range of number without !
         if (n <= -1 && n >= -20) {
-            return n;
+            return index - n;
+            
+        for (expression 1; expression 2; expression 3) {
+  // code block to be executed
+}
+
         } 
         else {
             return -1;

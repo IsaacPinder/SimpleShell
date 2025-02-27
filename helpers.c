@@ -140,7 +140,23 @@ if (input1[0] == '!'){
         // so checks range of number without !
         if (n <= -1 && n >= -20) {
             return index - n;
+            
+while (int Num >= 0) {
+          int temp = index
+          int Array
+        if (Array[temp] >= 0){
+          temp --
+          Num --
+        }
+        if (Array[19] == NULL AND temp == 0)
+        temp  == 19
 
+      while (Num > 0) {
+      temp --
+      Num --
+      printf("this is number maybe %d", Array[temp])
+
+      }
       
 
         }

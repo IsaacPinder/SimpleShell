@@ -33,13 +33,6 @@ void print_history(char *histarr, int commandIndex){
 }
 
 
-void execute_command(char *histarr, int commandIndex){
-   // leave error
-   // check command exists in history if not then print error
-
-   // execute (to be confirmed how we execute the command leave for now)
-}
-
 
 
 

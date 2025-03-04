@@ -24,7 +24,7 @@ void change_directory(char* dir){
        }
 }
 
-void print_history(char *histarr[], int commandIndex){
+void print_history(char *histarr[20], int commandIndex){
    //make copy of index
    // if theres nothing in array then just print a message saying so
    //loop through array printing all previouse things handeling circular array

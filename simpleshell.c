@@ -28,7 +28,7 @@ void prompt()
   char *execprevstr = "!!";
   
   // array to hold 20 history items set items to null (so history is empty at start)
-  char* history[20] = { NULL };
+  char *history[20] = {NULL};
   // index of current command
   int commandIndex = 0;
 
@@ -55,45 +55,58 @@ void prompt()
     // array to hold tokens
     char *tokensarr[50];
     // take in user input
-
     char *line = fgets(input, sizeof(input), stdin);
 
-    jumptotoken:
-
-    // tolkenises the line string by provided delimeters e.g (" \t|><&;")
-    char *token = strtok(line, " \t|><&;\n");
-
-    // token index to fill array
-    int toki = 0;
-    // loops through line string breaking it into smaller strings until end of line and stores in array
-
-    
-
-    while (token != NULL)
-    {
-      // store token in array
-      tokensarr[toki] = token;
-
-      // this print shows tolkens
-      // printf("%s", token);
-
-      // go to next token
-      token = strtok(NULL, " \t|><&;\n");
-
-      // increment array
-      toki += 1;
+    if(line[0] != '!'){
+     commandIndex = add_history(history,commandIndex,line);
+     printf("added to hist\n");
     }
-    // make final array item NULL
-    tokensarr[toki] = NULL;
+    
+    printf("1: %s 2: %s 3: %s \n", history[0],history[1],history[2]);
+
+
+    tokenise(tokensarr,line);
 
     // trim whitespace from input
     // char *trminput = str_trim(input);
   
+  
+    
+   //EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
+   if((tokensarr[0] != NULL) && str_cmp(tokensarr[0], execprevstr) == 0){
+    printf("babaoui\n");
+     if (tokensarr[1] != NULL)
+     {
+       // too many arguments
+       printf("ERROR there is too many arguments given, please amend your command\n");
+     }
+     else if(history[0] == NULL){
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+     }
+     else{
+        char* histexecline = history[commandIndex-1];
+        printf("current line to execute from hist %s \n",histexecline);
+         tokenise(tokensarr,histexecline);
+     }
+   }
+   //EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
+   //else if((tokensarr[0] != NULL) && str_exec_num(tokensarr[0]) >= 0){
+     // returns the number to execute
+     //int num_to_exec = str_exec_num(tokensarr[0]);
+  // }
+   //EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
+  // else if((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0],commandIndex) >= 0){
+     // returns the number to execute
+     //int num_to_exec = str_exec_num_minus(tokensarr[0],commandIndex);
+     
+  // }
+
     // EXIT: if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
     if (line == NULL || ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL))
-    {
-      exitloop = 1;
-    }
+ {
+   exitloop = 1;
+ }
     // GETPATH: checking input isn't empty AND first token is "getpath"
     else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], getpathstr) == 0)
     {
@@ -154,44 +167,15 @@ void prompt()
     }
     //HISTORY checking input isnt empty AND first token is "history"
     else if((tokensarr[0] != NULL) && str_cmp(tokensarr[0], histstr) == 0){
-       if (tokensarr[1] != NULL)
-       {
-         // too many arguments
-         printf("ERROR there is too many arguments given, please amend your command\n");
-       }
-       else{
-        print_history(history,commandIndex);
-       }
-    }
-    //EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
-    else if((tokensarr[0] != NULL) && str_cmp(tokensarr[0], execprevstr) == 0){
       if (tokensarr[1] != NULL)
       {
         // too many arguments
         printf("ERROR there is too many arguments given, please amend your command\n");
       }
-      else if(history[0] == NULL){
-         // no commands in history
-         printf("ERROR there is no commands in history, please execute some commands\n");
-      }
       else{
-         line = history[commandIndex];
-         goto jumptotoken;
-       
+       print_history(history,commandIndex);
       }
-    }
-    //EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
-    //else if((tokensarr[0] != NULL) && str_exec_num(tokensarr[0]) >= 0){
-      // returns the number to execute
-      //int num_to_exec = str_exec_num(tokensarr[0]);
-   // }
-    //EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
-   // else if((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0],commandIndex) >= 0){
-      // returns the number to execute
-      //int num_to_exec = str_exec_num_minus(tokensarr[0],commandIndex);
-      
-   // }
-
+   }
 
     // else ask operating system for command
     else

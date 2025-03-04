@@ -1,6 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "header.h"
+#include <unistd.h>    // fork, execl
+#include <sys/types.h> // pid_t datatype
+#include <sys/wait.h>  // wait
+#include <errno.h> 
 
 // Coded by Isaac during Semester 1 excercises
 // Function takes  pointer to string and returns int length
@@ -114,7 +119,46 @@ int str_exec_num_minus(char* input1,int index){
 return 0;
 }
 
-int add_history(char *histarr[], int commandIndex, char* command){
-  histarr[commandIndex] = command;
+
+
+int add_history(char *histarr[20], int commandIndex, char* command){
+  // if array has something in then free malloc for that location
+  if(histarr[commandIndex] != NULL){
+    free(histarr[commandIndex]);
+  }
+  // malloc array location for size of gthe input
+  histarr[commandIndex] = malloc(sizeof(str_len(command)));
+  // copy command into array
+   strcpy(histarr[commandIndex],command);
+   // return new index
    return commandIndex = (commandIndex + 1) % 20;
 }
+
+void tokenise(char* tokensarr[],char* line){
+  // tolkenises the line string by provided delimeters e.g (" \t|><&;")
+  char *token = strtok(line, " \t|><&;\n");
+
+  // token index to fill array
+  int toki = 0;
+  // loops through line string breaking it into smaller strings until end of line and stores in array
+
+  
+
+  while (token != NULL)
+  {
+    // store token in array
+    tokensarr[toki] = token;
+
+    // this print shows tolkens
+    // printf("%s", token);
+
+    // go to next token
+    token = strtok(NULL, " \t|><&;\n");
+
+    // increment array
+    toki += 1;
+  }
+  // make final array item NULLs
+  tokensarr[toki] = NULL;
+}
+

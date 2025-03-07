@@ -25,10 +25,21 @@ void change_directory(char* dir){
 }
 
 void print_history(char *histarr[20], int commandIndex){
-   //make copy of index
-   // if theres nothing in array then just print a message saying so
-   //loop through array printing all previouse things handeling circular array
-   // e.g if go over edge see explanation on simpleshell.pdf and OUR(ISAAC AND SCOTT(DO BETTER GUYS)) pseudocode
+   //check if history is empty
+    if (histarr[0] == NULL) {
+        printf("No commands in history.\n");
+        return;
+    }
+
+    //start index at correct position with the circular rray
+    int start = (commandIndex >= 20) ? commandIndex % 20 : 0;
+    
+    for (int i = 0; i < 20; i++) {
+        int index = (start + i) % 20;
+        if (histarr[index] != NULL) {
+            printf("%d: %s", index + 1, histarr[index]); //printing history based on the index
+        }
+    }
  printf("fdsbhsdvbh");
 }
 

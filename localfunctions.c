@@ -37,10 +37,9 @@ void print_history(char *histarr[20], int commandIndex){
     for (int i = 0; i < 20; i++) {
         int index = (start + i) % 20;
         if (histarr[index] != NULL) {
-            printf("%d: %s", index + 1, histarr[index]); //printing history based on the index
+            printf("%d: %s \n", index + 1, histarr[index]); //printing history based on the index
         }
     }
- printf("fdsbhsdvbh");
 }
 
 

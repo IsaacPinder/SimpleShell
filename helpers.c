@@ -6,6 +6,7 @@
 #include <sys/types.h> // pid_t datatype
 #include <sys/wait.h>  // wait
 #include <errno.h> 
+#include <ctype.h>
 
 // Coded by Isaac during Semester 1 excercises
 // Function takes  pointer to string and returns int length
@@ -95,29 +96,38 @@ char *newpoint = str + startpos;
 return newpoint;
 }
 
-int str_exec_num(char* input1){
-// make sure not to change index(make copy)
-// take an input check to make sure first char is '!'
-
-// if its '!' followed by a num directly then
-//  return the number aslong as 1 or 2 digits (<=19)
-
-// should check that number is not followed by any more chars
-// if failure then return -1
-return 0;
+int str_exec_num(char* input) {
+  if (input[0] == '!') {
+          // handle positive numbers
+          if (isdigit(input[1]) == 0) {
+              return -1;
+          }
+      
+          if (input[2] != '\0' && isdigit(input[2]) == 0) {
+              return -1;
+          }
+  
+          if (input[2] != '\0' && input[3] != '\0') {
+              return -1;
+          }
+          int n = atoi(input + 1);
+          // so checks range of number without !
+          if (n >= 0 && n <= 19) {
+              return n;
+          } else {
+              return -1;
+          }
+  } else {
+      return -1;
+  }
 }
-int str_exec_num_minus(char* input1,int index){
-// make sure not to change index(make copy)
-// take an input check to make sure first char is '!'
-// check second char is '-'
-//    note need to return (index - num) taking account for circular array
-//    return the number which follows '-' aslong as its 1 or 2 digit (<=19)
 
 
-// should check that number is not followed by any more chars
-// if failure then return -1
-return 0;
-}
+int str_exec_num_minus(char* input1, int index){
+ return -1;
+        }
+
+
 
 
 

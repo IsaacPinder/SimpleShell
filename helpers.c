@@ -179,3 +179,70 @@ void tokenise(char *tokensarr[], char *line)
   // make final array item NULLs
   tokensarr[toki] = NULL;
 }
+
+//function probably shouldnt be void just wrote for quickness
+  void getFromFile(int commandIndex,char *histarr[20])
+  {
+    int i;
+
+    FILE *fptr;
+
+     //opens file and uses r to read from file
+     fptr = fopen("simpleshell.txt", "r");
+
+     //checks if there is a file and if there isn't returns error  
+     if (fptr == NULL)
+     {
+
+     printf("No file found\n");
+
+     }
+
+     else
+     {
+      //gets the command index first as that is sent before the histarr
+      fscanf(fptr, "%1d", &commandIndex);
+      
+       //fills histarr (may need to change while this is just a quick bandade)
+       while(i<20)
+       {
+
+        fgets(histarr[i], 512, fptr);
+
+         i = i + 1;
+
+       }
+  }
+
+  //closes file
+  fclose(fptr);
+}
+  
+
+
+//function probably shouldnt be void just wrote for quickness
+  void sendToFile(int commandIndex, char *histarr[20])
+  {
+    int i = 0;
+
+    FILE *fptr;
+     //opens file
+     fptr = fopen("simpleshell.txt", "w");
+
+      //prints command index in file first
+       printf(fptr, commandIndex);
+
+        //sends what is in histarr to file 
+         while (histarr[i] != NULL){
+
+          printf(fptr, histarr[i]);
+
+          i = i + 1;
+        }
+
+    //closes file
+    fclose(fptr);
+     }
+  
+
+

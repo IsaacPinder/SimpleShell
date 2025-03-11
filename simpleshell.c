@@ -109,7 +109,7 @@ void prompt()
         int num_to_exec = str_exec_num(tokensarr[0],commandIndex, history);
         char *histexecline = history[num_to_exec];
         if (histexecline == NULL){
-          printf("History is empty at that index");
+          printf("History is empty at that index\n");
         }
         else{
           printf("current line to execute from hist %s \n", histexecline);

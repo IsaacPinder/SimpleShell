@@ -91,31 +91,38 @@ char *newpoint = str + startpos;
 return newpoint;
 }
 
-// can fuse str_exec_num_minus into this 
-int str_exec_num(char* input, int index) {
+int str_exec_num(char* input, int index, char *histarr[20]) {
     if (input[0] == '!') {
             // handle positive numbers
             if (isdigit(input[1]) == 0) {
+              printf("you passed not number \n")
                 return -1;
             }
         
             if (input[2] != '\0' && isdigit(input[2]) == 0) {
+                printf("3rd input is not a number and you've not got it empty  \n")
                 return -1;
             }
     
             if (input[2] != '\0' && input[3] != '\0') {
                 return -1;
             }
+
+
             int n = atoi(input + 1);
             // so checks range of number without !
             if (n >= 0 && n <= 19) {
-                return n;
-            } else {
+            if (histarr[19] != NULL && index < 19){
+  return (n + index)%20;
+    } 
+      else { return n
+    } else {
                 return -1;
             }
     } else {
         return -1;
     }
+    
 }
 
 int str_exec_num_minus(char* input1, int index){
@@ -135,45 +142,24 @@ if (input1[0] == '!'){
         if (input1[3] != '\0' && input1[4] != '\0') {
             return -1;
         }
+        // for when head and tail isn;t moved then 
+        // arayysize - 1 then take tail go from there and check if looped
 
         int n = atoi(input1 + 1);
         // so checks range of number without !
         if (n <= -1 && n >= -20) {
             return index - n;
             
-while (int Num >= 0) {
-          int temp = index
-          int Array
-        if (Array[temp] >= 0){
-          temp --
-          Num --
-        }
-        if (Array[19] == NULL AND temp == 0)
-        temp  == 19
-
-      while (Num > 0) {
-      temp --
-      Num --
-      printf("this is number maybe %d", Array[temp])
-
-      }
-      
 
         }
-
-  // code block to be executed
+  }
 }
 
-        } 
-        else {
-            return -1;
-        }
-        }
-        else {
-        return -1;
+ if (histarr[19] != NULL && index < 19){
+        (n + index)%20;
     }
-  
 
+}
 // check second char is '-'
 //    note need to return (index - num) taking account for circular array
 //    return the number which follows '-' aslong as its 1 or 2 digit (<=19)

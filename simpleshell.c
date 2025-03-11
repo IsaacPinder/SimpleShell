@@ -32,6 +32,8 @@ void prompt()
   // index of current command
   int commandIndex = 0;
 
+ void getFromFile(int commandIndex,char *histarr[20]);
+
   // save Home directory
   char *originDir = getenv("HOME");
   // print home and success status of changing to home
@@ -257,6 +259,8 @@ void prompt()
   printf("path set on exit: \n %s\n", get_path());
   free(origPath);
   origPath = NULL;
+
+ void sendToFile(int commandIndex, char *histarr[20]);
 
   // exit confirmation message
   printf("yay u left\n");

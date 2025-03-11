@@ -95,12 +95,12 @@ int str_exec_num(char* input, int index, char *histarr[20]) {
     if (input[0] == '!') {
             // handle positive numbers
             if (isdigit(input[1]) == 0) {
-              printf("you passed not number \n")
+              printf("you passed not number \n");
                 return -1;
             }
         
             if (input[2] != '\0' && isdigit(input[2]) == 0) {
-                printf("3rd input is not a number and you've not got it empty  \n")
+                printf("3rd input is not a number and you've not got it empty  \n");
                 return -1;
             }
     
@@ -113,19 +113,18 @@ int str_exec_num(char* input, int index, char *histarr[20]) {
             // so checks range of number without !
             if (n >= 0 && n <= 19) {
             if (histarr[19] != NULL && index < 19){
-  return (n + index)%20;
-    } 
-      else { return n
-    } else {
-                return -1;
+            return (n + index)%20;
+            } 
+            else { return n - index; }
             }
-    } else {
+    }
+     else {
         return -1;
     }
-    
-}
+    }
 
-int str_exec_num_minus(char* input1, int index){
+
+int str_exec_num_minus(char* input1, int index, char *histarr[20]){
 // make sure not to change index(make copy)
 // take an input check to make sure first char is '!'
 
@@ -155,9 +154,7 @@ if (input1[0] == '!'){
   }
 }
 
- if (histarr[19] != NULL && index < 19){
-        (n + index)%20;
-    }
+
 
 }
 // check second char is '-'

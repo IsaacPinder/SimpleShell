@@ -91,7 +91,7 @@ void prompt()
       }
     }
     // EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
-    else if ((tokensarr[0] != NULL) && str_exec_num(tokensarr[0]) >= 0)
+    else if ((tokensarr[0] != NULL) && str_exec_num(tokensarr[0],commandIndex,history) >= 0)
     {
       if (tokensarr[1] != NULL)
       {
@@ -106,10 +106,15 @@ void prompt()
       else
       {
         // returns the number to execute
-        int num_to_exec = str_exec_num(tokensarr[0]);
+        int num_to_exec = str_exec_num(tokensarr[0],commandIndex, history);
         char *histexecline = history[num_to_exec];
-        printf("Execute NUM current line to execute from hist %s \n", histexecline);
-        tokenise(tokensarr, histexecline);
+        if (histexecline == NULL){
+          printf("History is empty at that index");
+        }
+        else{
+          printf("current line to execute from hist %s \n", histexecline);
+          tokenise(tokensarr, histexecline);
+        }
       }
     }
     // EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
@@ -130,8 +135,13 @@ void prompt()
         // returns the number to execute
         int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
         char *histexecline = history[num_to_exec];
-        printf("Execute minus current line to execute from hist %s \n", histexecline);
-        tokenise(tokensarr, histexecline);
+        if (histexecline == NULL){
+          printf("History is empty at that index");
+        }
+        else{
+          printf("current line to execute from hist %s \n", histexecline);
+          tokenise(tokensarr, histexecline);
+        }
       }
     }
   }

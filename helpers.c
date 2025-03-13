@@ -103,7 +103,6 @@ int str_exec_num(char* input, int index, char *histarr[20]) {
   if (input[0] == '!') {
           // handle positive numbers
           if (isdigit(input[1]) == 0) {
-            printf("you passed not number \n");
               return -1;
           }
       
@@ -133,9 +132,34 @@ int str_exec_num(char* input, int index, char *histarr[20]) {
 
 
 
-int str_exec_num_minus(char *input1, int index)
-{
-  return -1;
+int str_exec_num_minus(char *input1, int index){
+  if (input1[0] == '!'){
+    if (input1[1] == '-') {
+          if (isdigit(input1[2]) == 0) {
+              return -1;
+          }
+      
+          if (input1[3] != '\0' && isdigit(input1[3]) == 0) {
+              return -1;
+          }
+  
+          if (input1[3] != '\0' && input1[4] != '\0') {
+              return -1;
+          }
+          // for when head and tail isn;t moved then 
+          // arayysize - 1 then take tail go from there and check if looped
+  
+          int n = atoi(input1 + 1);
+          // so checks range of number without !
+          // n is a negative number at this point
+          if (n <= -1 && n >= -20) {
+            
+            return (index + (n+20)) % 20;            
+          }
+    }
+  
+}
+return -1;
 }
 
 int add_history(char *histarr[20], int commandIndex, char *command)
@@ -180,42 +204,42 @@ void tokenise(char *tokensarr[], char *line)
   tokensarr[toki] = NULL;
 }
 
-//function probably shouldnt be void just wrote for quickness
-  void getFromFile(int commandIndex,char *histarr[20])
-  {
-    int i;
+int getFromFile(char *histarr[20]) {
 
-    FILE *fptr;
-
-     //opens file and uses r to read from file
-     fptr = fopen("simpleshell.txt", "r");
-
-     //checks if there is a file and if there isn't returns error  
-     if (fptr == NULL)
-     {
-
-     printf("No file found\n");
-
-     }
-
-     else
-     {
-      //gets the command index first as that is sent before the histarr
-      fscanf(fptr, "%1d", &commandIndex);
-      
-       //fills histarr (may need to change while this is just a quick bandade)
-       while(i<20)
-       {
-
-        fgets(histarr[i], 512, fptr);
-
-         i = i + 1;
-
-       }
+  // opens file in read mode
+  FILE *fptr = fopen("History.txt", "r");
+  // if fails print error return 0 as defualt command index
+  if (fptr == NULL) {
+      printf("No History file found\n");
+      return 0;
   }
 
-  //closes file
+  printf("History.txt opened\n");
+
+  int commandIndex = 0;
+
+  // reads in command index from file (first item)
+  fscanf(fptr, "%d\n", &commandIndex);
+  printf("Command index read: %d\n", commandIndex);
+
+  // Temporary buffer for read in line
+  char buffer[512]; 
+
+  int i = 0;
+
+  while (i < 20 && fgets(buffer, sizeof(buffer), fptr)) {
+
+    //convert the read in line to pointer for using in our addhistory function
+      char* bufpoint = buffer;
+      add_history(histarr,i,bufpoint);
+     
+      i++;
+  }
+
+  //close file
   fclose(fptr);
+
+  return commandIndex;
 }
   
 
@@ -227,15 +251,22 @@ void tokenise(char *tokensarr[], char *line)
 
     FILE *fptr;
      //opens file
-     fptr = fopen("simpleshell.txt", "w");
+     fptr = fopen("History.txt", "w");
+
+     if (fptr == NULL) {
+      printf("\nError opening file\n"); 
+  }
 
       //prints command index in file first
-       printf(fptr, commandIndex);
+       fprintf(fptr, "%d", commandIndex);
 
         //sends what is in histarr to file 
          while (histarr[i] != NULL){
 
-          printf(fptr, histarr[i]);
+          //print array items to double check has stuff
+          printf("histarr[%d]: %s\n", i, histarr[i]);
+
+          fprintf(fptr,"%s\n",histarr[i]);
 
           i = i + 1;
         }

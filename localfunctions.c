@@ -46,24 +46,26 @@ void print_history(char *histarr[20], int commandIndex)
         for (int i = commandIndex; i < 20; i++)
         {
 
-            count++;
             printf("%d: %s \n", count, histarr[i]); // printing history based on the index
-        }
+            count++;
 
+        }
+        printf("\n");
         for (int i = 0; i < commandIndex; i++)
         {
-            count++;
             printf("%d: %s \n", count, histarr[i]); // printing history based on the index
+            count++;
         }
     }
     else
     {
+        
         for (int i = 0; i < 20; i++)
         {
             int index = (start + i) % 20;
             if (histarr[index] != NULL)
             {
-                printf("%d: %s \n", index + 1, histarr[index]); // printing history based on the index
+                printf("%d: %s \n", index, histarr[index]); // printing history based on the index
             }
         }
         if (histarr[0] == NULL)
@@ -81,14 +83,15 @@ void print_history(char *histarr[20], int commandIndex)
             for (int i = commandIndex; i < 20; i++)
             {
 
-                count++;
                 printf("%d: %s \n", count, histarr[commandIndex]); // printing history based on the index
+                count++;
+
             }
 
             for (int i = 0; i < commandIndex; i++)
             {
-                count++;
                 printf("%d: %s \n", count, histarr[i]); // printing history based on the index
+                count++;
             }
         }
     }

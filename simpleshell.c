@@ -32,7 +32,7 @@ void prompt()
   // index of current command
   int commandIndex = 0;
 
- void getFromFile(int commandIndex,char *histarr[20]);
+ commandIndex = getFromFile(history);
 
   // save Home directory
   char *originDir = getenv("HOME");
@@ -87,7 +87,7 @@ void prompt()
       }
       else
       {
-        char *histexecline = history[commandIndex - 1];
+        char *histexecline = history[(commandIndex - 1) % 20];
         printf("current line to execute from hist %s \n", histexecline);
         tokenise(tokensarr, histexecline);
       }
@@ -138,7 +138,7 @@ void prompt()
         int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
         char *histexecline = history[num_to_exec];
         if (histexecline == NULL){
-          printf("History is empty at that index");
+          printf("History is empty at that index\n");
         }
         else{
           printf("current line to execute from hist %s \n", histexecline);
@@ -254,13 +254,14 @@ void prompt()
     }
   }
 
+
+  sendToFile(commandIndex,history);
+
   // set currentpath to orignalpath then free malloch
   set_path(origPath);
-  printf("path set on exit: \n %s\n", get_path());
+  printf("\npath set on exit: \n %s\n", get_path());
   free(origPath);
   origPath = NULL;
-
- void sendToFile(int commandIndex, char *histarr[20]);
 
   // exit confirmation message
   printf("yay u left\n");

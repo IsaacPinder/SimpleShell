@@ -99,7 +99,7 @@ char *str_trim(char *str)
   return newpoint;
 }
 
-int str_exec_num(char* input, int index, char *histarr[20]) {
+int str_exec_num(char* input, int index, char *histarr[]) {
   if (input[0] == '!') {
           // handle positive numbers
           if (isdigit(input[1]) == 0) {
@@ -255,13 +255,14 @@ int getFromFile(char *histarr[20]) {
 
      if (fptr == NULL) {
       printf("\nError opening file\n"); 
+      return;
   }
 
       //prints command index in file first
-       fprintf(fptr, "%d", commandIndex);
+      //  fprintf(fptr, "%d", commandIndex);
 
         //sends what is in histarr to file 
-         while (histarr[i] != NULL){
+         while (i < 20 && histarr[i] != NULL){
 
           //print array items to double check has stuff
           printf("histarr[%d]: %s\n", i, histarr[i]);

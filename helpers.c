@@ -207,20 +207,14 @@ void tokenise(char *tokensarr[], char *line)
 int getFromFile(char *histarr[20]) {
 
   // opens file in read mode
-  FILE *fptr = fopen("History.txt", "r");
+  FILE *fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "r");
   // if fails print error return 0 as defualt command index
   if (fptr == NULL) {
       printf("No History file found\n");
-      return 0;
+      return -1;
   }
 
   printf("History.txt opened\n");
-
-  int commandIndex = 0;
-
-  // reads in command index from file (first item)
-  fscanf(fptr, "%d\n", &commandIndex);
-  printf("Command index read: %d\n", commandIndex);
 
   // Temporary buffer for read in line
   char buffer[512]; 
@@ -236,41 +230,53 @@ int getFromFile(char *histarr[20]) {
       i++;
   }
 
+
   //close file
   fclose(fptr);
-
-  return commandIndex;
+  //return command index
+  return i%20;
 }
   
 
 
 //function probably shouldnt be void just wrote for quickness
-  void sendToFile(int commandIndex, char *histarr[20])
+  void sendToFile(int commandindex, char *histarr[20])
   {
     int i = 0;
 
     FILE *fptr;
      //opens file
-     fptr = fopen("History.txt", "w");
+     fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "w");
 
      if (fptr == NULL) {
       printf("\nError opening file\n"); 
       return;
   }
 
-      //prints command index in file first
-      //  fprintf(fptr, "%d", commandIndex);
-
         //sends what is in histarr to file 
-         while (i < 20 && histarr[i] != NULL){
+        //if last item is empty (not looped over circle) then write for length of history
+        if (histarr[19] == NULL){
+         while (histarr[i] != NULL){
 
           //print array items to double check has stuff
-          printf("histarr[%d]: %s\n", i, histarr[i]);
+         // printf("histarr[%d]: %s\n", i, histarr[i]);
 
-          fprintf(fptr,"%s\n",histarr[i]);
+          fprintf(fptr,"%s",histarr[i]);
 
-          i = i + 1;
+          i ++;
         }
+      }
+      // if looped over circle array
+      else{
+        // write from tail to end
+        for (int tail = commandindex ; tail < 19 ; tail++){
+          fprintf(fptr,"%s",histarr[tail]);
+        }
+        // write from start to tail
+        for (int start = 0; start < commandindex; start ++){
+          fprintf(fptr,"%s",histarr[start]);
+        }
+      }
 
     //closes file
     fclose(fptr);

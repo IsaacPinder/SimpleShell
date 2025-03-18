@@ -32,7 +32,7 @@ void prompt()
   // index of current command
   int commandIndex = 0;
 
- commandIndex = getFromFile(history);
+  commandIndex = getFromFile(history);
 
   // save Home directory
   char *originDir = getenv("HOME");
@@ -59,17 +59,23 @@ void prompt()
     // take in user input
     char *line = fgets(input, sizeof(input), stdin);
 
+     // if control d presssed dont try to tokenise or manipluate(comparisons)
+    // non existant input(causes error) instead break from program loop
+    if (line == NULL){
+      break;
+    }
+
+    // if input is not a history command add it to history
     if (line[0] != '!')
     {
       commandIndex = add_history(history, commandIndex, line);
       printf("added to hist\n");
     }
 
-  
+    // tokenise input after it has been added to history
     tokenise(tokensarr, line);
 
-    // trim whitespace from input
-    // char *trminput = str_trim(input);
+    // handles history exec prev commands
     if (line[0] == '!')
     {
     // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
@@ -147,8 +153,10 @@ void prompt()
       }
     }
   }
-    // EXIT: if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
-    if (line == NULL || ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL))
+   
+  
+  // EXIT: User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+    if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }

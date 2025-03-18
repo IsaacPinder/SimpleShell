@@ -28,6 +28,7 @@ void change_directory(char *dir)
     }
 }
 
+// coded by Paul
 void print_history(char *histarr[20], int commandIndex)
 {
     // check if history is empty

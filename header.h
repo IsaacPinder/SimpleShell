@@ -10,6 +10,6 @@ void print_history(char *histarr[20], int commandIndex);
 int str_exec_num(char* input1,int index , char* histarr[]);
 int str_exec_num_minus(char* input1, int index);
 int add_history(char *histarr[20], int commandIndex, char* command);
- void tokenise(char* tokensarr[],char* line);
+void tokenise(char* tokensarr[],char* line);
 int getFromFile(char *histarr[20]);
-void sendToFile(int commandIndex, char *histarr[20]);
+void sendToFile(int commandindex, char *histarr[20]);

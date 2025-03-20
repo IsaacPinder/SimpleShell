@@ -18,8 +18,11 @@
 // remove pre defined functions which we made (aslong as dostn break anything)
 // tidy up comments(comment everything)
 // tidy up what belongs in helpers v localfunctions
-// do we have to free our allocated mallocs??????
 
+// QUESTIONS
+// do we have to free our allocated mallocs??????
+// when ctrl d pressed do add to history
+// file paths????? for specefic machine .aliases???
 void prompt()
 {
   // int exit to for use in main loop to determine if we should continue running
@@ -39,11 +42,13 @@ void prompt()
   char *history[20] = {NULL};
 
   // alias [i][0] = name alias[i][1] = command
-  char *alias[20][2] = {{NULL}, {NULL}};
+  char *alias[10][2] = {{NULL}, {NULL}};
   // index of current command
   int commandIndex = 0;
 
+  // load history and alias arrays from file
   commandIndex = getFromFile(history);
+  loadFile(alias);
 
   // save Home directory
   char *originDir = getenv("HOME");
@@ -52,7 +57,7 @@ void prompt()
   printf(" chdir to home success? 0 good: %d \n\n", chdir(originDir));
 
   // malloc space for original path then copy the path into that space
-  char *origPath = malloc(sizeof(str_len(getenv("PATH"))));
+  char *origPath = malloc(str_len(getenv("PATH"))+1);
   strcpy(origPath, getenv("PATH"));
   printf("Original_Path : %s \n\n", origPath);
 
@@ -74,7 +79,7 @@ void prompt()
       break;
     }
 
-    // check if input in alias
+    // check if input is a alias
     // index for start navigating through line
     int charindex = 0;
     // index for navigating through first word of line
@@ -85,7 +90,6 @@ void prompt()
     {
       charindex++;
     }
-
     // copy charcters from line over to firstword until we reach end of first word(whitespace or \n or \0)
     while (line[charindex] != ' ' && line[charindex] != '\0' && line[charindex] != '\n')
     {
@@ -96,8 +100,9 @@ void prompt()
     // add end of string char to firstword
     firstword[fwordindex] = '\0';
 
+    printf("Before alias expansion: %s\n", line);
     // loop through alias array
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 10; i++)
     {
       // if alias not empty(gap in array)
       if (alias[i][0] != NULL)
@@ -371,7 +376,9 @@ void prompt()
     }
   }
 
+  // save history and alias array to file
   sendToFile(commandIndex, history);
+  saveAliasToFile(alias);
 
   // set currentpath to orignalpath then free malloch
   set_path(origPath);

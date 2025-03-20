@@ -99,67 +99,79 @@ char *str_trim(char *str)
   return newpoint;
 }
 
-int str_exec_num(char* input, int index, char *histarr[]) {
-  if (input[0] == '!') {
-          // handle positive numbers
-          if (isdigit(input[1]) == 0) {
-              return -1;
-          }
-      
-          if (input[2] != '\0' && isdigit(input[2]) == 0) {
-              printf("3rd input is not a number and you've not got it empty  \n");
-              return -1;
-          }
-  
-          if (input[2] != '\0' && input[3] != '\0') {
-              return -1;
-          }
-
-
-          int n = atoi(input + 1);
-          // so checks range of number without !
-          if (n >= 0 && n <= 19) {
-          if (histarr[19] != NULL && index < 19){
-          return (n + index)%20;
-          } 
-          else { return n ;}
-          }
-  }
-
+int str_exec_num(char *input, int index, char *histarr[])
+{
+  if (input[0] == '!')
+  {
+    // handle positive numbers
+    if (isdigit(input[1]) == 0)
+    {
       return -1;
+    }
 
+    if (input[2] != '\0' && isdigit(input[2]) == 0)
+    {
+      printf("3rd input is not a number and you've not got it empty  \n");
+      return -1;
+    }
+
+    if (input[2] != '\0' && input[3] != '\0')
+    {
+      return -1;
+    }
+
+    int n = atoi(input + 1);
+    // so checks range of number without !
+    if (n >= 0 && n <= 19)
+    {
+      if (histarr[19] != NULL && index < 19)
+      {
+        return (n + index) % 20;
+      }
+      else
+      {
+        return n;
+      }
+    }
   }
 
-
-
-int str_exec_num_minus(char *input1, int index){
-  if (input1[0] == '!'){
-    if (input1[1] == '-') {
-          if (isdigit(input1[2]) == 0) {
-              return -1;
-          }
-      
-          if (input1[3] != '\0' && isdigit(input1[3]) == 0) {
-              return -1;
-          }
-  
-          if (input1[3] != '\0' && input1[4] != '\0') {
-              return -1;
-          }
-          // for when head and tail isn;t moved then 
-          // arayysize - 1 then take tail go from there and check if looped
-  
-          int n = atoi(input1 + 1);
-          // so checks range of number without !
-          // n is a negative number at this point
-          if (n <= -1 && n >= -20) {
-            
-            return (index + (n+20)) % 20;            
-          }
-    }
-  
+  return -1;
 }
-return -1;
+
+int str_exec_num_minus(char *input1, int index)
+{
+  if (input1[0] == '!')
+  {
+    if (input1[1] == '-')
+    {
+      if (isdigit(input1[2]) == 0)
+      {
+        return -1;
+      }
+
+      if (input1[3] != '\0' && isdigit(input1[3]) == 0)
+      {
+        return -1;
+      }
+
+      if (input1[3] != '\0' && input1[4] != '\0')
+      {
+        return -1;
+      }
+      // for when head and tail isn;t moved then
+      // arayysize - 1 then take tail go from there and check if looped
+
+      int n = atoi(input1 + 1);
+      // so checks range of number without !
+      // n is a negative number at this point
+      if (n <= -1 && n >= -20)
+      {
+
+        return (index + (n + 20)) % 20;
+      }
+    }
+  }
+  return -1;
 }
 
 int add_history(char *histarr[20], int commandIndex, char *command)
@@ -170,7 +182,7 @@ int add_history(char *histarr[20], int commandIndex, char *command)
     free(histarr[commandIndex]);
   }
   // malloc array location for size of gthe input
-  histarr[commandIndex] = malloc(sizeof(str_len(command)));
+  histarr[commandIndex] = malloc(str_len(command) + 1);
   // copy command into array
   strcpy(histarr[commandIndex], command);
   // return new index
@@ -204,165 +216,238 @@ void tokenise(char *tokensarr[], char *line)
   tokensarr[toki] = NULL;
 }
 
-int getFromFile(char *histarr[20]) {
+int getFromFile(char *histarr[20])
+{
 
   // opens file in read mode
   FILE *fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "r");
   // if fails print error return 0 as defualt command index
-  if (fptr == NULL) {
-      printf("No History file found\n");
-      return -1;
+  if (fptr == NULL)
+  {
+    printf("No History file found\n");
+    return -1;
   }
 
   printf("History.txt opened\n");
 
   // Temporary buffer for read in line
-  char buffer[512]; 
+  char buffer[512];
 
   int i = 0;
 
-  while (i < 20 && fgets(buffer, sizeof(buffer), fptr)) {
-
-    //convert the read in line to pointer for using in our addhistory function
-      char* bufpoint = buffer;
-      add_history(histarr,i,bufpoint);
-     
-      i++;
-  }
-
-
-  //close file
-  fclose(fptr);
-  //return command index
-  return i%20;
-}
-  
-
-
-//function probably shouldnt be void just wrote for quickness
-  void sendToFile(int commandindex, char *histarr[20])
+  while (i < 20 && fgets(buffer, sizeof(buffer), fptr))
   {
-    int i = 0;
 
-    FILE *fptr;
-     //opens file
-     fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "w");
+    // convert the read in line to pointer for using in our addhistory function
+    char *bufpoint = buffer;
+    add_history(histarr, i, bufpoint);
 
-     if (fptr == NULL) {
-      printf("\nError opening file\n"); 
-      return;
+    i++;
   }
 
-        //sends what is in histarr to file 
-        //if last item is empty (not looped over circle) then write for length of history
-        if (histarr[19] == NULL){
-         while (histarr[i] != NULL){
+  // close file
+  fclose(fptr);
+  // return command index
+  return i % 20;
+}
 
-          //print array items to double check has stuff
-         // printf("histarr[%d]: %s\n", i, histarr[i]);
+// function probably shouldnt be void just wrote for quickness
+void sendToFile(int commandindex, char *histarr[20])
+{
+  int i = 0;
 
-          fprintf(fptr,"%s",histarr[i]);
+  FILE *fptr;
+  // opens file
+  fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "w");
 
-          i ++;
-        }
-      }
-      // if looped over circle array
-      else{
-        // write from tail to end
-        for (int tail = commandindex ; tail < 19 ; tail++){
-          fprintf(fptr,"%s",histarr[tail]);
-        }
-        // write from start to tail
-        for (int start = 0; start < commandindex; start ++){
-          fprintf(fptr,"%s",histarr[start]);
-        }
-      }
+  if (fptr == NULL)
+  {
+    printf("\nError opening file\n");
+    return;
+  }
 
-    //closes file
-    fclose(fptr);
-     }
+  // sends what is in histarr to file
+  // if last item is empty (not looped over circle) then write for length of history
+  if (histarr[19] == NULL)
+  {
+    while (histarr[i] != NULL)
+    {
 
-     void addToAlias(char* alias[20][2],char* name,char* command){
+      // print array items to double check has stuff
+      // printf("histarr[%d]: %s\n", i, histarr[i]);
 
-      //loop entire list to see if alias already exists
-      for (int i = 0; i < 20; i++)
+      fprintf(fptr, "%s", histarr[i]);
+
+      i++;
+    }
+  }
+  // if looped over circle array
+  else
+  {
+    // write from tail to end
+    for (int tail = commandindex; tail < 19; tail++)
+    {
+      fprintf(fptr, "%s", histarr[tail]);
+    }
+    // write from start to tail
+    for (int start = 0; start < commandindex; start++)
+    {
+      fprintf(fptr, "%s", histarr[start]);
+    }
+  }
+
+  // closes file
+  fclose(fptr);
+}
+
+void addToAlias(char *alias[10][2], char *name, char *command)
+{
+
+  // loop entire list to see if alias already exists
+  for (int i = 0; i < 10; i++)
+  {
+    // check if null so strcmp dosnt break
+    if (alias[i][0] != NULL)
+    {
+      if (str_cmp(alias[i][0], name) == 0)
       {
-        // check if null so strcmp dosnt break
-        if(alias[i][0] != NULL){
-          if(str_cmp(alias[i][0],name) == 0){
-          printf("Error alias already exists\n");
-          return;
-        }
+        printf("Error alias already exists\n");
+        return;
       }
-      }
+    }
+  }
 
-      // loop through list find first empty space
-      for (int i = 0; i < 20; i++)
-      {
-        // if empty space
-        if (alias[i][0] == NULL){
+  // loop through list find first empty space
+  for (int i = 0; i < 10; i++)
+  {
+    // if empty space
+    if (alias[i][0] == NULL)
+    {
 
-        // malloc array location for size of the input
-       alias[i][0] = malloc(sizeof(str_len(name)));
-       alias[i][1] = malloc(sizeof(str_len(command)));
+      // malloc array location for size of the input
 
-       // copy input to array
+      alias[i][0] = malloc(str_len(name) + 1);
+      alias[i][1] = malloc(str_len(command) + 1);
+
+      // copy input to array
       strcpy(alias[i][0], name);
       strcpy(alias[i][1], command);
 
       // return once found
-          return;
-        }
-      }
-      
-      // if reach end of loop no empty spaces
-      printf("Alias is at max capacity\n");
-
-     }
-
-     void removeAlias(char* alias[20][2],char* name){
-      // loop through entire list
-      for (int i = 0; i < 20; i++)
-      {
-
-        // check if null so strcmp dosnt break
-        if(alias[i][0] != NULL){
-          // if alias found
-          if(str_cmp(alias[i][0],name) == 0){
-
-            // free malloc
-            free(alias[i][0]);
-            free(alias[i][1]);
-            // set to null
-            alias[i][0] = NULL;
-            alias[i][0] = NULL;
-
-      // return once found
       return;
-        }
-      }
-      }
-      // if reach end of loop alias not found
-      printf("Alias not found\n");
-     }
+    }
+  }
 
-     void printAlias(char* alias[20][2]){
-      // count for number of things in alias(since we could have gaps in array)
-      int count = 0;
-      for (int i = 0; i < 20; i++)
-      {
-        // check value isnt null (is a gap)
-        if (alias[i][0] != NULL){
-          printf("%d: %s, %s\n", count,alias[i][0],alias[i][1]);
-          count ++;
-        }
-      }
+  // if reach end of loop no empty spaces
+  printf("Alias is at max capacity\n");
+}
 
-      // if no items in alias
-      if (count == 0)
+void removeAlias(char *alias[10][2], char *name)
+{
+  // loop through entire list
+  for (int i = 0; i < 10; i++)
+  {
+
+    // check if null so strcmp dosnt break
+    if (alias[i][0] != NULL)
+    {
+      // if alias found
+      if (str_cmp(alias[i][0], name) == 0)
       {
-        printf("Alias is empty\n");
+
+        // free malloc
+        free(alias[i][0]);
+        free(alias[i][1]);
+        // set to null
+        alias[i][0] = NULL;
+        alias[i][0] = NULL;
+
+        // return once found
+        return;
       }
-      
-      
-     }
+    }
+  }
+  // if reach end of loop alias not found
+  printf("Alias not found\n");
+}
+
+void printAlias(char *alias[10][2])
+{
+  // count for number of things in alias(since we could have gaps in array)
+  int count = 0;
+  for (int i = 0; i < 10; i++)
+  {
+    // check value isnt null (is a gap)
+    if (alias[i][0] != NULL)
+    {
+      printf("%d: %s, %s\n", count, alias[i][0], alias[i][1]);
+      count++;
+    }
+  }
+
+  // if no items in alias
+  if (count == 0)
+  {
+    printf("Alias is empty\n");
+  }
+}
+
+void saveAliasToFile(char *alias[10][2])
+{
+
+  FILE *fptr;
+  // opens file
+  fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/aliases.txt", "w");
+  // w for write
+  if (fptr == NULL)
+  {
+    printf("No History file found\n");
+  }
+
+  for (int i = 0; i < 10; i++)
+  {
+
+    if (alias[i][0] != NULL && alias[i][1] != NULL)
+    {
+      fprintf(fptr, "alias %s %s\n", alias[i][0], alias[i][1]);
+    }
+  }
+
+  fclose(fptr);
+}
+
+void loadFile(char *alias[10][2])
+{
+
+  FILE *fptr;
+  // opens file
+  fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/aliases.txt", "r");
+  if (fptr == NULL)
+  {
+    printf("No History file found\n");
+  }
+  char buffer[512];
+  int i = 0;
+
+  while (i < 10 && fgets(buffer, sizeof(buffer), fptr))
+  {
+
+    // Tokenize the first word so we can see if its alias in the if statement
+    char *token = strtok(buffer, " \n");
+
+    if (token == NULL || strcmp(token, "alias") != 0)
+    {
+      continue; // Skip the lines that don't start with alias
+    }
+
+    char *name = strtok(NULL, " \n");
+    char *command = strtok(NULL, "\n");
+
+    if (name != NULL && command != NULL)
+    {
+      addToAlias(alias, name, command);
+      i++;
+    }
+  }
+  fclose(fptr);
+}

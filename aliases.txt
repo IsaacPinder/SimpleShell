@@ -1,5 +1,2 @@
 alias batman ls
-history
 alias batmans ls
-history
-exit

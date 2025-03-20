@@ -22,7 +22,7 @@
 // QUESTIONS
 // do we have to free our allocated mallocs(that are saved to files, when we exit)??????
 // when ctrl d pressed do add to history
-// file paths????? for specefic machine .aliases???
+// file paths????? for specefic machine .aliases??? .hist_list???
 
 // STAGE1 FINAL TEST ?Is the input tokenized correctly (try ‘ls<tab>-lF;.&..>.<..|/<tab>fksdk’ 
 //it should print an error for fksdk and the listings of . and .. twice plus the

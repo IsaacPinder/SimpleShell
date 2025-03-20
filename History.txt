@@ -3,3 +3,6 @@ history
 alias batmans ls
 history
 exit
+history
+alias
+history

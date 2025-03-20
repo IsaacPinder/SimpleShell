@@ -20,9 +20,15 @@
 // tidy up what belongs in helpers v localfunctions
 
 // QUESTIONS
-// do we have to free our allocated mallocs??????
+// do we have to free our allocated mallocs(that are saved to files, when we exit)??????
 // when ctrl d pressed do add to history
 // file paths????? for specefic machine .aliases???
+
+// STAGE1 FINAL TEST ?Is the input tokenized correctly (try ‘ls<tab>-lF;.&..>.<..|/<tab>fksdk’ 
+//it should print an error for fksdk and the listings of . and .. twice plus the
+// listing of / all formatted with entry per line and file permissions)?
+
+
 void prompt()
 {
   // int exit to for use in main loop to determine if we should continue running
@@ -100,7 +106,6 @@ void prompt()
     // add end of string char to firstword
     firstword[fwordindex] = '\0';
 
-    printf("Before alias expansion: %s\n", line);
     // loop through alias array
     for (int i = 0; i < 10; i++)
     {

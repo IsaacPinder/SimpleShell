@@ -13,3 +13,6 @@ int add_history(char *histarr[20], int commandIndex, char* command);
 void tokenise(char* tokensarr[],char* line);
 int getFromFile(char *histarr[20]);
 void sendToFile(int commandindex, char *histarr[20]);
+void addToAlias(char* alias[20][2],char* name,char* command);
+void removeAlias(char* alias[20][2],char* name);
+void printAlias(char* alias[20][2]);

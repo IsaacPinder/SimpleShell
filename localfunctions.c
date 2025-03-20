@@ -96,4 +96,6 @@ void print_history(char *histarr[20], int commandIndex)
             }
         }
     }
+
+    
 }

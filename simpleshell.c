@@ -11,8 +11,14 @@
 // gcc simpleshell.c helpers.c localfunctions.c -pedantic -Wall -o simpleshell
 /// ./simpleshell
 
-// Prompt function prints £: and takes user input
-// upon "exit" or ^D being entered shell will quit
+// NOTES FOR QUALITY CHECK
+// remove redundent commented code
+// tidy up comments
+// remove prints for testing
+// remove pre defined functions which we made (aslong as dostn break anything)
+// tidy up comments(comment everything)
+// tidy up what belongs in helpers v localfunctions
+
 
 void prompt()
 {
@@ -26,9 +32,13 @@ void prompt()
   char *cdstr = "cd";
   char *histstr = "history";
   char *execprevstr = "!!";
+  char *addaliasstr = "alias";
+  char *unaliasstr = "unalias";
 
   // array to hold 20 history items set items to null (so history is empty at start)
   char *history[20] = {NULL};
+
+  char *alias[20][2] = {{NULL},{NULL}};
   // index of current command
   int commandIndex = 0;
 
@@ -230,6 +240,53 @@ void prompt()
       {
         print_history(history, commandIndex);
       }
+    }
+    // ALIAS checking input isnt empty AND first token is "history"
+    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], addaliasstr) == 0)
+    {
+      // if only alias then call printAlias 
+      if (tokensarr[1] == NULL)
+      {
+          printAlias(alias);  
+      }
+      //attempting to add alais not enough arguments
+      else if (tokensarr[2] == NULL)
+      {
+        // not enough arguments
+        printf("ERROR there is not enough arguments to add alias include a name and the command\n");
+      }
+      // else if 3rd token is not empty (too many arguments)
+      else if (tokensarr[3] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      // else add alias
+      else
+      {
+        addToAlias(alias,tokensarr[1],tokensarr[2]);
+      }
+    }
+    // UNALIAS checking input isnt empty AND first token is "history"
+    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], unaliasstr) == 0){
+
+      //not enough arguments
+    if (tokensarr[1] == NULL)
+     {
+       // not enough arguments
+       printf("ERROR there is not enough arguments to remove alias include the name\n");
+     }
+     // else if 3rd token is not empty (too many arguments)
+     else if (tokensarr[2] != NULL)
+     {
+       // too many arguments
+       printf("ERROR there is too many arguments given, please amend your command\n");
+     }
+     // else remove alias
+     else
+     {
+        removeAlias(alias,tokensarr[1]);
+     }
     }
 
     // else ask operating system for command

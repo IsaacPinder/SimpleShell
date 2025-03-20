@@ -281,6 +281,88 @@ int getFromFile(char *histarr[20]) {
     //closes file
     fclose(fptr);
      }
-  
 
+     void addToAlias(char* alias[20][2],char* name,char* command){
 
+      //loop entire list to see if alias already exists
+      for (int i = 0; i < 20; i++)
+      {
+        // check if null so strcmp dosnt break
+        if(alias[i][0] != NULL){
+          if(str_cmp(alias[i][0],name) == 0){
+          printf("Error alias already exists\n");
+          return;
+        }
+      }
+      }
+
+      // loop through list find first empty space
+      for (int i = 0; i < 20; i++)
+      {
+        // if empty space
+        if (alias[i][0] == NULL){
+
+        // malloc array location for size of the input
+       alias[i][0] = malloc(sizeof(str_len(name)));
+       alias[i][1] = malloc(sizeof(str_len(command)));
+
+       // copy input to array
+      strcpy(alias[i][0], name);
+      strcpy(alias[i][1], command);
+
+      // return once found
+          return;
+        }
+      }
+      
+      // if reach end of loop no empty spaces
+      printf("Alias is at max capacity\n");
+
+     }
+
+     void removeAlias(char* alias[20][2],char* name){
+      // loop through entire list
+      for (int i = 0; i < 20; i++)
+      {
+
+        // check if null so strcmp dosnt break
+        if(alias[i][0] != NULL){
+          // if alias found
+          if(str_cmp(alias[i][0],name) == 0){
+
+            // free malloc
+            free(alias[i][0]);
+            free(alias[i][1]);
+            // set to null
+            alias[i][0] = NULL;
+            alias[i][0] = NULL;
+
+      // return once found
+      return;
+        }
+      }
+      }
+      // if reach end of loop alias not found
+      printf("Alias not found\n");
+     }
+
+     void printAlias(char* alias[20][2]){
+      // count for number of things in alias(since we could have gaps in array)
+      int count = 0;
+      for (int i = 0; i < 20; i++)
+      {
+        // check value isnt null (is a gap)
+        if (alias[i][0] != NULL){
+          printf("%d: %s, %s\n", count,alias[i][0],alias[i][1]);
+          count ++;
+        }
+      }
+
+      // if no items in alias
+      if (count == 0)
+      {
+        printf("Alias is empty\n");
+      }
+      
+      
+     }

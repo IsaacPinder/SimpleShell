@@ -1,0 +1,19 @@
+alias 12 bdfjkn
+12alias 13 fvdi
+alias 14 jrgsnf
+14alias 15 smrigo
+15alias 16 gdrio
+alias
+alias 17 dfiu
+alias 18 wfen
+alias 20 too
+alias
+alias 21 fuck
+alias
+clear
+getpath
+set path 555
+aetpath 55
+setpath 44
+getpath
+exit

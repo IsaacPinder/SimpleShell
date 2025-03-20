@@ -18,11 +18,21 @@ void prompt()
 {
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
+
   // pointer to strings for use with str_cmp to compare input to
   char *exitstr = "exit";
   char *getpathstr = "getpath";
   char *setpathstr = "setpath";
   char *cdstr = "cd";
+  char *histstr = "history";
+  char *execprevstr = "!!";
+
+  // array to hold 20 history items set items to null (so history is empty at start)
+  char *history[20] = {NULL};
+  // index of current command
+  int commandIndex = 0;
+
+  commandIndex = getFromFile(history);
 
   // save Home directory
   char *originDir = getenv("HOME");
@@ -49,35 +59,104 @@ void prompt()
     // take in user input
     char *line = fgets(input, sizeof(input), stdin);
 
-    // tolkenises the line string by provided delimeters e.g (" \t|><&;")
-    char *token = strtok(line, " \t|><&;\n");
-
-    // token index to fill array
-    int toki = 0;
-    // loops through line string breaking it into smaller strings until end of line and stores in array
-    while (token != NULL)
-    {
-      // store token in array
-      tokensarr[toki] = token;
-
-      // this print shows tolkens
-      // printf("%s", token);
-
-      // go to next token
-      token = strtok(NULL, " \t|><&;\n");
-
-      // increment array
-      toki += 1;
+     // if control d presssed dont try to tokenise or manipluate(comparisons)
+    // non existant input(causes error) instead break from program loop
+    if (line == NULL){
+      break;
     }
-    // make final array item NULL
-    tokensarr[toki] = NULL;
 
-    // trim whitespace from input
-    // char *trminput = str_trim(input);
+    // if input is not a history command add it to history
+    if (line[0] != '!')
+    {
+      commandIndex = add_history(history, commandIndex, line);
+      printf("added to hist\n");
+    }
 
-    // EXIT: if ^D is pressed(therefor line is NULL) OR User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+    // tokenise input after it has been added to history
+    tokenise(tokensarr, line);
 
-    if (line == NULL || ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL))
+    // handles history exec prev commands
+    if (line[0] == '!')
+    {
+    // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
+    if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], execprevstr) == 0)
+    {
+      if (tokensarr[1] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      else if (history[0] == NULL)
+      {
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+      }
+      else
+      {
+        char *histexecline = history[(commandIndex - 1) % 20];
+        printf("current line to execute from hist %s \n", histexecline);
+        tokenise(tokensarr, histexecline);
+      }
+    }
+    // EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
+    else if ((tokensarr[0] != NULL) && str_exec_num(tokensarr[0],commandIndex,history) >= 0)
+    {
+      if (tokensarr[1] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      else if (history[0] == NULL)
+      {
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+      }
+      else
+      {
+        // returns the number to execute
+        int num_to_exec = str_exec_num(tokensarr[0],commandIndex, history);
+        char *histexecline = history[num_to_exec];
+        if (histexecline == NULL){
+          printf("History is empty at that index\n");
+        }
+        else{
+          printf("current line to execute from hist %s \n", histexecline);
+          tokenise(tokensarr, histexecline);
+        }
+      }
+    }
+    // EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
+    else if ((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0], commandIndex) >= 0)
+    {
+      if (tokensarr[1] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      else if (history[0] == NULL)
+      {
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+      }
+      else
+      {
+        // returns the number to execute
+        int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
+        char *histexecline = history[num_to_exec];
+        if (histexecline == NULL){
+          printf("History is empty at that index\n");
+        }
+        else{
+          printf("current line to execute from hist %s \n", histexecline);
+          tokenise(tokensarr, histexecline);
+        }
+      }
+    }
+  }
+   
+  
+  // EXIT: User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+    if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }
@@ -127,23 +206,35 @@ void prompt()
         // set directory to home directory
         chdir(originDir);
       }
-       // else if 3rd token is not empty (too many arguments)
-       else if (tokensarr[2] != NULL)
-       {
-         // too many arguments
-         printf("ERROR there is too many arguments given, please amend your command\n");
-       }
+      // else if 3rd token is not empty (too many arguments)
+      else if (tokensarr[2] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
       // else change directory to paramter
       else
       {
         change_directory(tokensarr[1]);
       }
     }
+    // HISTORY checking input isnt empty AND first token is "history"
+    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], histstr) == 0)
+    {
+      if (tokensarr[1] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+      }
+      else
+      {
+        print_history(history, commandIndex);
+      }
+    }
 
     // else ask operating system for command
     else
     {
-
       // fork
       pid_t p = fork();
 
@@ -171,9 +262,12 @@ void prompt()
     }
   }
 
+
+  sendToFile(commandIndex,history);
+
   // set currentpath to orignalpath then free malloch
   set_path(origPath);
-  printf("path set on exit: \n %s\n", get_path());
+  printf("\npath set on exit: \n %s\n", get_path());
   free(origPath);
   origPath = NULL;
 

@@ -1,19 +1,19 @@
-alias 12 bdfjkn
-12alias 13 fvdi
-alias 14 jrgsnf
-14alias 15 smrigo
-15alias 16 gdrio
-alias
-alias 17 dfiu
-alias 18 wfen
-alias 20 too
-alias
-alias 21 fuck
-alias
+bat god why
 clear
-getpath
-set path 555
-aetpath 55
-setpath 44
-getpath
-exit
+alias bat pwd
+alias rob ls
+alias
+bat god why
+alias
+bat 
+alias bat god whalias bat pwd
+alias bat pwd
+alias rob ls
+pwd god why
+alias
+ls -a
+alias
+ls
+alias bat ls
+ls -a
+alias

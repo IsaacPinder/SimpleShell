@@ -38,7 +38,7 @@ void prompt()
   // array to hold 20 history items set items to null (so history is empty at start)
   char *history[20] = {NULL};
 
-  char *alias[20][2] = {{NULL},{NULL}};
+  char *alias[10][2] = {NULL};
   // index of current command
   int commandIndex = 0;
 

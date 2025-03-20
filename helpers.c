@@ -282,10 +282,10 @@ int getFromFile(char *histarr[20]) {
     fclose(fptr);
      }
 
-     void addToAlias(char* alias[20][2],char* name,char* command){
+     void addToAlias(char* alias[10][2],char* name,char* command){
 
       //loop entire list to see if alias already exists
-      for (int i = 0; i < 20; i++)
+      for (int i = 0; i < 10; i++)
       {
         // check if null so strcmp dosnt break
         if(alias[i][0] != NULL){
@@ -297,7 +297,7 @@ int getFromFile(char *histarr[20]) {
       }
 
       // loop through list find first empty space
-      for (int i = 0; i < 20; i++)
+      for (int i = 0; i < 10; i++)
       {
         // if empty space
         if (alias[i][0] == NULL){
@@ -320,9 +320,9 @@ int getFromFile(char *histarr[20]) {
 
      }
 
-     void removeAlias(char* alias[20][2],char* name){
+     void removeAlias(char* alias[10][2],char* name){
       // loop through entire list
-      for (int i = 0; i < 20; i++)
+      for (int i = 0; i < 10; i++)
       {
 
         // check if null so strcmp dosnt break
@@ -346,10 +346,10 @@ int getFromFile(char *histarr[20]) {
       printf("Alias not found\n");
      }
 
-     void printAlias(char* alias[20][2]){
+     void printAlias(char* alias[10][2]){
       // count for number of things in alias(since we could have gaps in array)
       int count = 0;
-      for (int i = 0; i < 20; i++)
+      for (int i = 0; i < 10; i++)
       {
         // check value isnt null (is a gap)
         if (alias[i][0] != NULL){
@@ -367,7 +367,7 @@ int getFromFile(char *histarr[20]) {
       
      }
 
-     void SaveAliasToFile(char* alias[20][2]) {
+     void SaveAliasToFile(char* alias[10][2]) {
 
 
        FILE *fptr;
@@ -380,7 +380,7 @@ if (fptr == NULL) {
   }
 
 
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 10; i++) {
     
         if (alias[i][0] != NULL && alias[i][1] != NULL) {
             fprintf(fptr, "alias %s %s\n", alias[i][0], alias[i][1]);
@@ -393,7 +393,7 @@ if (fptr == NULL) {
       
      }
 
-     void LoadAliasToFile(char* alias[20][2]) {
+     void LoadAliasToFile(char* alias[10][2]) {
 
       FILE *fptr;
      //opens file
@@ -405,7 +405,7 @@ if (fptr == NULL) {
       int i = 0;
    
 
-  while (i < 20 && fgets(buffer, sizeof(buffer), fptr)) {
+  while (i < 10 && fgets(buffer, sizeof(buffer), fptr)) {
       
 
         // Tokenize the first word so we can see if its alias in the if statement

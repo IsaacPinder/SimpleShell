@@ -1,2 +1,2 @@
 alias batman ls
-alias batmans ls
+alias robin pwd

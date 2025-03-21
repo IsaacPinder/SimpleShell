@@ -82,8 +82,18 @@ void prompt()
     // non existant input(causes error) instead break from program loop
     if (line == NULL)
     {
+      char *exitstrnewline = "exit\n";
+
+      commandIndex = add_history(history, commandIndex, exitstrnewline);
       break;
     }
+
+     // if input is not a history command add it to history
+     if (line[0] != '!')
+     {
+       commandIndex = add_history(history, commandIndex, line);
+       printf("added to hist\n");
+     }
 
     // check if input is a alias
     // index for start navigating through line
@@ -132,13 +142,6 @@ void prompt()
 
     printf("first word %s \n", firstword);
     printf("line is %s \n", line);
-
-    // if input is not a history command add it to history
-    if (line[0] != '!')
-    {
-      commandIndex = add_history(history, commandIndex, line);
-      printf("added to hist\n");
-    }
 
     // tokenise input after it has been added to history
     tokenise(tokensarr, line);

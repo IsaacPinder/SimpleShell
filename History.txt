@@ -1,8 +1,16 @@
-alias batman ls
-history
-alias batmans ls
 history
 exit
 history
+exithistory
+alias
+batman -a
+history
 alias
 history
+exit
+robin
+robin gg hhh ddd
+history
+exit
+history
+exit

@@ -28,71 +28,32 @@ void change_directory(char *dir)
     }
 }
 
-// coded by Paul
-void print_history(char *histarr[20], int commandIndex)
-{
-    // check if history is empty
-    if (histarr[0] == NULL)
-    {
+//coded by Paul
+//New Improved History Function
+void print_history(char *histarr[20], int commandIndex) {
+    //check if history is empty
+    if (histarr[0] == NULL) {
         printf("No commands in history.\n");
         return;
     }
 
-    int start = (commandIndex >= 20) ? commandIndex % 20 : 0;
+    int count = 0;
 
-    if (histarr[19] != NULL && commandIndex < 19)
-    {
-        int count = 0;
-
-        for (int i = commandIndex; i < 20; i++)
-        {
-
-            printf("%d: %s \n", count, histarr[i]); // printing history based on the index
-            count++;
-
+    //checking history has wrapped around
+    if (histarr[19] != NULL && commandIndex < 19) {
+        for (int i = commandIndex; i < 20; i++) {
+            printf("%d: %s\n", count++, histarr[i]);
         }
-        printf("\n");
-        for (int i = 0; i < commandIndex; i++)
-        {
-            printf("%d: %s \n", count, histarr[i]); // printing history based on the index
-            count++;
+        for (int i = 0; i < commandIndex; i++) {
+            printf("%d: %s\n", count++, histarr[i]);
         }
-    }
-    else
-    {
-        
-        for (int i = 0; i < 20; i++)
-        {
-            int index = (start + i) % 20;
-            if (histarr[index] != NULL)
-            {
-                printf("%d: %s \n", index, histarr[index]); // printing history based on the index
-            }
-        }
-        if (histarr[0] == NULL)
-        {
-            printf("No commands in history.\n");
-            return;
-        }
-
-        // int start = (commandIndex >= 20) ? commandIndex % 20 : 0;
-
-        if (histarr[19] != NULL && commandIndex < 19)
-        {
-            int count = 0;
-
-            for (int i = commandIndex; i < 20; i++)
-            {
-
-                printf("%d: %s \n", count, histarr[commandIndex]); // printing history based on the index
-                count++;
-
-            }
-
-            for (int i = 0; i < commandIndex; i++)
-            {
-                printf("%d: %s \n", count, histarr[i]); // printing history based on the index
-                count++;
+    } else { 
+        //for loop like normal if history hasn't wrapped around
+        for (int i = 0; i < 20; i++) {
+            int index = (commandIndex + i) % 20;
+            //making sure it isnt printing null value
+            if (histarr[index] != NULL) {
+                printf("%d: %s\n", count++, histarr[index]);
             }
         }
     }

@@ -28,7 +28,6 @@ void change_directory(char *dir)
     }
 }
 
-//coded by Paul
 //New Improved History Function
 void print_history(char *histarr[20], int commandIndex) {
     //check if history is empty
@@ -37,7 +36,7 @@ void print_history(char *histarr[20], int commandIndex) {
         return;
     }
 
-    int count = 0;
+    int count = 1;
 
     //checking history has wrapped around
     if (histarr[19] != NULL && commandIndex < 19) {

@@ -296,9 +296,9 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
       printf("passed check %d \n", i);
 
       // print array items to double check has stuff
-       printf("histarr[%d]: %s\n", i, histarr[i]);
+      //printf("histarr[%d]: %s\n", i, histarr[i]);
 
-       // fprintf(fptr, "%s", histarr[i]);
+       fprintf(fptr, "%s", histarr[i]);
 
        // free malloc
        free(histarr[i]);

@@ -11,32 +11,35 @@
 
 int str_exec_num(char *input, int index, char *histarr[])
 {
+  // check first char is '!'
   if (input[0] == '!')
   {
-    // checks if number after ! is a digit if not then return -1
+    // checks if number after ! (2nd char) is a digit if not then return -1
     if (isdigit(input[1]) == 0)
     {
       printf("please enter digit after the '!'");
       return -1;
     }
     //isdigit == 0 means digit invalid
+    // if 3rd character isnt empty and has something which isnt a number in it
     if (input[2] != '\0' && isdigit(input[2]) == 0)
     {
       printf("character in 3rd position is not a number\n");
       return -1;
     }
 
+    // if both the 2nd and 3rd are not end of string then error(too many characters)
     if (input[2] != '\0' && input[3] != '\0')
     {
-      printf("null character not detected hence command invalid");
+      printf("error: too many digits");
       return -1;
     }
-    //creates a variable without first character
+    //creates a variable without first character(!)
     int n = atoi(input + 1);
     // checks range of n to
     if (n >= 0 && n <= 19)
     {
-      if (histarr[19] != NULL && index < 19)
+      if (histarr[19] != NULL)
       {
       //ciruclar array adjusted position
         return (n + index) % 20;
@@ -54,33 +57,39 @@ int str_exec_num(char *input, int index, char *histarr[])
 
 int str_exec_num_minus(char *input1, int index)
 {
+  // check first char is '!'
   if (input1[0] == '!')
   {
+    // check 2nd char is -
     if (input1[1] == '-')
     {
-      //same as str_exec_num but moved forward to account for extra character
+      
+      // checks if number after - (3rd char)is a digit if not then return -1
       if (isdigit(input1[2]) == 0)
       {
         printf("3rd character not valid digit");
         return -1;
       }
 
+      //isdigit == 0 means digit invalid
+      // if 4th character isnt empty and has something which isnt a number in it
       if (input1[3] != '\0' && isdigit(input1[3]) == 0)
       {
         printf("4th character not digit and not null terminator therefore inavlid");
         return -1;
       }
 
-      if (input1[3] != '\0' && input1[4] != '\0')
+    // if both the 3rd and 4th are not end of string then error(too many characters)
+    if (input1[3] != '\0' && input1[4] != '\0')
       {
-        printf("Invalid digit");
+        printf("error: too many digits");
         return -1;
       }
       
-
+      //creates a variable without first character(!) e.g !-12 = -12
       int n = atoi(input1 + 1);
-      // so checks range of number without !
-      // n is a negative number at this point
+      // n is a negative number at this point see above comment
+      // check is within range
       if (n <= -1 && n >= -20)
       {
         //ciruclar array adjusted position

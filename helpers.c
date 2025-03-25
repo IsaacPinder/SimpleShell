@@ -17,7 +17,7 @@ int str_exec_num(char *input, int index, char *histarr[])
     // checks if number after ! (2nd char) is a digit if not then return -1
     if (isdigit(input[1]) == 0)
     {
-      printf("please enter digit after the '!'");
+      printf("please enter digit after the '!'\n");
       return -1;
     }
     //isdigit == 0 means digit invalid
@@ -31,7 +31,7 @@ int str_exec_num(char *input, int index, char *histarr[])
     // if both the 2nd and 3rd are not end of string then error(too many characters)
     if (input[2] != '\0' && input[3] != '\0')
     {
-      printf("error: too many digits");
+      printf("error: too many digits\n");
       return -1;
     }
     //creates a variable without first character(!)
@@ -51,7 +51,8 @@ int str_exec_num(char *input, int index, char *histarr[])
       }
     }
     else{
-      printf("Number out of range");
+      printf("Number out of range\n");
+      return -1;
     }
   }
 
@@ -70,7 +71,7 @@ int str_exec_num_minus(char *input1, int index)
       // checks if number after - (3rd char)is a digit if not then return -1
       if (isdigit(input1[2]) == 0)
       {
-        printf("3rd character not valid digit");
+        printf("3rd character not valid digit\n");
         return -1;
       }
 
@@ -78,14 +79,14 @@ int str_exec_num_minus(char *input1, int index)
       // if 4th character isnt empty and has something which isnt a number in it
       if (input1[3] != '\0' && isdigit(input1[3]) == 0)
       {
-        printf("4th character not digit and not null terminator therefore inavlid");
+        printf("4th character not digit and not null terminator therefore inavlid\n");
         return -1;
       }
 
     // if both the 3rd and 4th are not end of string then error(too many characters)
     if (input1[3] != '\0' && input1[4] != '\0')
       {
-        printf("error: too many digits");
+        printf("error: too many digits\n");
         return -1;
       }
       
@@ -99,7 +100,8 @@ int str_exec_num_minus(char *input1, int index)
         return (index + (n + 20)) % 20;
       }
       else{
-        printf("Number out of range");
+        printf("Number out of range\n");
+        return -1;
       }
     }
   }

@@ -236,7 +236,7 @@ int main(void)
     }
 
     // EXIT: User input is NOT empty AND first token is "exit" AND second is empty then done looping
-    if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }

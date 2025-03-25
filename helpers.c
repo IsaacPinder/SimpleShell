@@ -219,20 +219,23 @@ void tokenise(char *tokensarr[], char *line)
 int getFromFile(char *histarr[20],char *origDir)
 {
 
-  // make a tempory copy of alias command (to not overwrite original)
+  // make a tempory copy of home dir location (to not overwrite original)
   char histfilelocation[512];
-  // copy original alias command to aliascom
+
+  // copy home dir to temp variable
   strcpy(histfilelocation, origDir);
-  // concatenate aliascom to the rest of the line(from the end of first word)
-  strcat(histfilelocation, ".hist_list");
+  // concatenate hist to the rest of the line(from the end of first word)
+  strcat(histfilelocation, "/.hist_list");
 
   // opens file in read mode
   FILE *fptr = fopen(histfilelocation, "r");
   // if fails print error return 0 as defualt command index
   if (fptr == NULL)
   {
-    printf("No History file found\n");
-    return -1;
+    printf("History not found Creating History file \n");
+    FILE *fptr = fopen(histfilelocation, "w");
+    fclose(fptr);
+    return 0;
   }
 
   printf("History.txt opened\n");
@@ -259,40 +262,56 @@ int getFromFile(char *histarr[20],char *origDir)
 }
 
 // function probably shouldnt be void just wrote for quickness
-void sendToFile(int commandindex, char *histarr[20])
+void sendToFile(int commandindex, char *histarr[20], char *origdir)
 {
+
+  // make a tempory copy of home dir location (to not overwrite original)
+  char histfilelocation[512];
+
+  // copy home dir to temp variable
+  strcpy(histfilelocation, origdir);
+  // concatenate hist to the rest of the line(from the end of first word)
+  strcat(histfilelocation, "/.hist_list");
+
   int i = 0;
 
   FILE *fptr;
   // opens file
-  fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "w");
+  fptr = fopen(histfilelocation, "w");
+
 
   if (fptr == NULL)
   {
     printf("\nError opening file\n");
     return;
   }
-
+  
   // sends what is in histarr to file
   // if last item is empty (not looped over circle) then write for length of history
   if (histarr[19] == NULL)
   {
+
     while (histarr[i] != NULL)
     {
+      printf("passed check %d \n", i);
 
       // print array items to double check has stuff
-      // printf("histarr[%d]: %s\n", i, histarr[i]);
+       printf("histarr[%d]: %s\n", i, histarr[i]);
 
-      fprintf(fptr, "%s", histarr[i]);
+       // fprintf(fptr, "%s", histarr[i]);
 
        // free malloc
        free(histarr[i]);
        // set to null
-       histarr = NULL;
+       histarr[i] = NULL;
 
       i++;
     }
+   
+
   }
+
+  
   // if looped over circle array
   else
   {
@@ -300,11 +319,19 @@ void sendToFile(int commandindex, char *histarr[20])
     for (int tail = commandindex; tail < 19; tail++)
     {
       fprintf(fptr, "%s", histarr[tail]);
+       // free malloc
+       free(histarr[tail]);
+       // set to null
+       histarr[tail] = NULL;
     }
     // write from start to tail
     for (int start = 0; start < commandindex; start++)
     {
       fprintf(fptr, "%s", histarr[start]);
+       // free malloc
+       free(histarr[start]);
+       // set to null
+       histarr[start] = NULL;
     }
   }
 
@@ -404,12 +431,21 @@ void printAlias(char *alias[10][2])
   }
 }
 
-void saveAliasToFile(char *alias[10][2])
+void saveAliasToFile(char *alias[10][2], char *origdir)
 {
+
+// make a tempory copy of home dir location (to not overwrite original)
+char aliasfilelocation[512];
+
+// copy home dir to temp variable
+strcpy(aliasfilelocation, origdir);
+// concatenate hist to the rest of the line(from the end of first word)
+strcat(aliasfilelocation, "/.hist_list");
+
 
   FILE *fptr;
   // opens file
-  fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/aliases.txt", "w");
+  fptr = fopen(aliasfilelocation, "w");
   // w for write
   if (fptr == NULL)
   {
@@ -434,15 +470,27 @@ void saveAliasToFile(char *alias[10][2])
   fclose(fptr);
 }
 
-void loadFile(char *alias[10][2])
+void loadAliasFile(char *alias[10][2], char *origdir)
 {
+
+  // make a tempory copy of home dir location (to not overwrite original)
+char aliasfilelocation[512];
+
+// copy home dir to temp variable
+strcpy(aliasfilelocation, origdir);
+// concatenate hist to the rest of the line(from the end of first word)
+strcat(aliasfilelocation, "/.hist_list");
 
   FILE *fptr;
   // opens file
-  fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/aliases.txt", "r");
+  fptr = fopen(aliasfilelocation, "r");
+
   if (fptr == NULL)
   {
-    printf("No History file found\n");
+    printf("Alias not found Creating Alias file \n");
+    FILE *fptr = fopen(aliasfilelocation, "w");
+    fclose(fptr);
+    return ;
   }
   char buffer[512];
   int i = 0;

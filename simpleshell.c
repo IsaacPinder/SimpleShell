@@ -66,7 +66,7 @@ void prompt()
   
   // load history and alias arrays from file
   commandIndex = getFromFile(history,origDir);
-  loadFile(alias);
+  loadAliasFile(alias,origDir);
 
 
 
@@ -393,8 +393,8 @@ void prompt()
   }
 
   // save history and alias array to file
-  sendToFile(commandIndex, history);
-  saveAliasToFile(alias);
+  sendToFile(commandIndex, history, origDir);
+  saveAliasToFile(alias,origDir);
 
   // set currentpath to orignalpath then free malloc
   set_path(origPath);

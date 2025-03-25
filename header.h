@@ -11,7 +11,7 @@ int str_exec_num(char* input1,int index , char* histarr[]);
 int str_exec_num_minus(char* input1, int index);
 int add_history(char *histarr[20], int commandIndex, char* command);
 void tokenise(char* tokensarr[],char* line);
-int getFromFile(char *histarr[20]);
+int getFromFile(char *histarr[20],char *origDir);
 void sendToFile(int commandindex, char *histarr[20]);
 void addToAlias(char* alias[10][2],char* name,char* command);
 void removeAlias(char* alias[10][2],char* name);

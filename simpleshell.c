@@ -20,8 +20,8 @@
 // tidy up what belongs in helpers v localfunctions
 
 // QUESTIONS
-// do we have to free our allocated mallocs(that are saved to files, when we exit)?????? ( yes always)
-// when ctrl d pressed do add to history (no handeled before checked same time as checking less than 512, exit can be added but must be justified if it is or isnt)
+// (DONE, TEST) do we have to free our allocated mallocs(that are saved to files, when we exit)?????? ( yes always)
+// (DONE)when ctrl d pressed do add to history (no handeled before checked same time as checking less than 512, exit can be added but must be justified if it is or isnt)
 // file paths????? for specefic machine .aliases??? .hist_list??? (make fieles definable use home directory insted of what weve got(hm dir /file) also change to histlist, snprintf for joining home directory and text file)
 // is include 
 //fix print hist
@@ -54,15 +54,24 @@ void prompt()
   // index of current command
   int commandIndex = 0;
 
-  // load history and alias arrays from file
-  commandIndex = getFromFile(history);
-  loadFile(alias);
+
 
   // save Home directory
-  char *originDir = getenv("HOME");
+  char *origDir = malloc(str_len(getenv("HOME"))+1);
+  strcpy(origDir, getenv("HOME"));
   // print home and success status of changing to home
-  printf("\nHomeDir : %s \n\n", originDir);
-  printf(" chdir to home success? 0 good: %d \n\n", chdir(originDir));
+  printf("\nHomeDir : %s \n\n", origDir);
+  printf(" chdir to home success? 0 good: %d \n\n", chdir(origDir));
+
+  
+  // load history and alias arrays from file
+  commandIndex = getFromFile(history,origDir);
+  loadFile(alias);
+
+
+
+
+
 
   // malloc space for original path then copy the path into that space
   char *origPath = malloc(str_len(getenv("PATH"))+1);
@@ -84,9 +93,6 @@ void prompt()
     // non existant input(causes error) instead break from program loop
     if (line == NULL)
     {
-      char *exitstrnewline = "exit\n";
-
-      commandIndex = add_history(history, commandIndex, exitstrnewline);
       break;
     }
 
@@ -280,7 +286,7 @@ void prompt()
       if (tokensarr[1] == NULL)
       {
         // set directory to home directory
-        chdir(originDir);
+        chdir(origDir);
       }
       // else if 3rd token is not empty (too many arguments)
       else if (tokensarr[2] != NULL)
@@ -390,11 +396,15 @@ void prompt()
   sendToFile(commandIndex, history);
   saveAliasToFile(alias);
 
-  // set currentpath to orignalpath then free malloch
+  // set currentpath to orignalpath then free malloc
   set_path(origPath);
   printf("\npath set on exit: \n %s\n", get_path());
   free(origPath);
   origPath = NULL;
+
+  // free malloc
+  free(origDir);
+  origDir = NULL;
 
   // exit confirmation message
   printf("yay u left\n");

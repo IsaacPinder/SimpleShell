@@ -216,11 +216,18 @@ void tokenise(char *tokensarr[], char *line)
   tokensarr[toki] = NULL;
 }
 
-int getFromFile(char *histarr[20])
+int getFromFile(char *histarr[20],char *origDir)
 {
 
+  // make a tempory copy of alias command (to not overwrite original)
+  char histfilelocation[512];
+  // copy original alias command to aliascom
+  strcpy(histfilelocation, origDir);
+  // concatenate aliascom to the rest of the line(from the end of first word)
+  strcat(histfilelocation, ".hist_list");
+
   // opens file in read mode
-  FILE *fptr = fopen("/Users/isaacpinder/Desktop/2ndYearUni/CS210 Shell/History.txt", "r");
+  FILE *fptr = fopen(histfilelocation, "r");
   // if fails print error return 0 as defualt command index
   if (fptr == NULL)
   {
@@ -277,6 +284,11 @@ void sendToFile(int commandindex, char *histarr[20])
       // printf("histarr[%d]: %s\n", i, histarr[i]);
 
       fprintf(fptr, "%s", histarr[i]);
+
+       // free malloc
+       free(histarr[i]);
+       // set to null
+       histarr = NULL;
 
       i++;
     }
@@ -401,7 +413,7 @@ void saveAliasToFile(char *alias[10][2])
   // w for write
   if (fptr == NULL)
   {
-    printf("No History file found\n");
+    printf("No Alias file found\n");
   }
 
   for (int i = 0; i < 10; i++)
@@ -410,6 +422,12 @@ void saveAliasToFile(char *alias[10][2])
     if (alias[i][0] != NULL && alias[i][1] != NULL)
     {
       fprintf(fptr, "alias %s %s\n", alias[i][0], alias[i][1]);
+      // free malloc
+      free(alias[i][0]);
+      free(alias[i][1]);
+      // set to null
+      alias[i][0] = NULL;
+      alias[i][0] = NULL;
     }
   }
 

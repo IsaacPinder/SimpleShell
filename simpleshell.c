@@ -93,8 +93,8 @@ int main(void)
       break;
     }
 
-     // if input is not a history command add it to history
-     if (line[0] != '!')
+     // if input is not a history command or a newlineadd it to history
+     if (line[0] != '!' && line[0] != '\n')
      {
        commandIndex = add_history(history, commandIndex, line);
      }
@@ -191,7 +191,8 @@ int main(void)
         {
           // returns the number to execute
           int num_to_exec = str_exec_num(tokensarr[0], commandIndex, history);
-          char *histexecline = history[num_to_exec];
+          // add one to match with the printing starting from 1 instead of 0
+          char *histexecline = history[(num_to_exec-1)];
           if (histexecline == NULL)
           {
             printf("History is empty at that index\n");
@@ -220,7 +221,7 @@ int main(void)
         {
           // returns the number to execute
           int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
-          char *histexecline = history[num_to_exec];
+          char *histexecline = history[num_to_exec - 1];
           if (histexecline == NULL)
           {
             printf("History is empty at that index\n");

@@ -37,7 +37,7 @@ int str_exec_num(char *input, int index, char *histarr[])
     //creates a variable without first character(!)
     int n = atoi(input + 1);
     // checks range of n to
-    if (n >= 0 && n <= 19)
+    if (n >= 1 && n <= 20)
     {
       if (histarr[19] != NULL)
       {
@@ -49,6 +49,9 @@ int str_exec_num(char *input, int index, char *histarr[])
         //otherwise simply return digit
         return n;
       }
+    }
+    else{
+      printf("Number out of range");
     }
   }
 
@@ -94,6 +97,9 @@ int str_exec_num_minus(char *input1, int index)
       {
         //ciruclar array adjusted position
         return (index + (n + 20)) % 20;
+      }
+      else{
+        printf("Number out of range");
       }
     }
   }

@@ -15,7 +15,7 @@
 // remove redundent commented code
 // tidy up comments
 // remove prints for testing
-// remove pre defined functions which we made (aslong as dostn break anything)
+// (DONE) remove pre defined functions which we made (aslong as dostn break anything)
 // tidy up comments(comment everything)
 // tidy up what belongs in helpers v localfunctions
 
@@ -36,7 +36,7 @@ void prompt()
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
 
-  // pointer to strings for use with str_cmp to compare input to
+  // pointer to strings for use with strcmp to compare input to
   char *exitstr = "exit";
   char *getpathstr = "getpath";
   char *setpathstr = "setpath";
@@ -57,7 +57,7 @@ void prompt()
 
 
   // save Home directory
-  char *origDir = malloc(str_len(getenv("HOME"))+1);
+  char *origDir = malloc(strlen(getenv("HOME"))+1);
   strcpy(origDir, getenv("HOME"));
   // print home and success status of changing to home
   printf("\nHomeDir : %s \n\n", origDir);
@@ -74,7 +74,7 @@ void prompt()
 
 
   // malloc space for original path then copy the path into that space
-  char *origPath = malloc(str_len(getenv("PATH"))+1);
+  char *origPath = malloc(strlen(getenv("PATH"))+1);
   strcpy(origPath, getenv("PATH"));
   printf("Original_Path : %s \n\n", origPath);
 
@@ -131,7 +131,7 @@ void prompt()
       if (alias[i][0] != NULL)
       {
         // if stored alias is the same as first word inputed
-        if ((str_cmp(alias[i][0], firstword) == 0))
+        if ((strcmp(alias[i][0], firstword) == 0))
         {
 
           // make a tempory copy of alias command (to not overwrite original)
@@ -158,7 +158,7 @@ void prompt()
     if (line[0] == '!')
     {
       // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
-      if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], execprevstr) == 0)
+      if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], execprevstr) == 0)
       {
         if (tokensarr[1] != NULL)
         {
@@ -238,12 +238,12 @@ void prompt()
     }
 
     // EXIT: User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
-    if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
+    if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }
     // GETPATH: checking input isn't empty AND first token is "getpath"
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], getpathstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], getpathstr) == 0)
     {
       // if too many arguments (2nd token not empty) print error
       if (tokensarr[1] != NULL)
@@ -257,7 +257,7 @@ void prompt()
       }
     }
     // SETPATH: checking input isnt empty AND first token is "setpath"
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], setpathstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], setpathstr) == 0)
     {
       // if no path argument (2nd token empty) print error
       if (tokensarr[1] == NULL)
@@ -280,7 +280,7 @@ void prompt()
       }
     }
     // CD: checking input isnt empty AND first token is "cd"
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], cdstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], cdstr) == 0)
     {
       // if no arguments (2nd token empty) change to home directory
       if (tokensarr[1] == NULL)
@@ -301,7 +301,7 @@ void prompt()
       }
     }
     // HISTORY checking input isnt empty AND first token is "history"
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], histstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], histstr) == 0)
     {
       if (tokensarr[1] != NULL)
       {
@@ -314,7 +314,7 @@ void prompt()
       }
     }
     // ALIAS checking input isnt empty AND first token is "history"
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], addaliasstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], addaliasstr) == 0)
     {
       // if only alias then call printAlias
       if (tokensarr[1] == NULL)
@@ -340,7 +340,7 @@ void prompt()
       }
     }
     // UNALIAS checking input isnt empty AND first token is "history"
-    else if ((tokensarr[0] != NULL) && str_cmp(tokensarr[0], unaliasstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], unaliasstr) == 0)
     {
 
       // not enough arguments

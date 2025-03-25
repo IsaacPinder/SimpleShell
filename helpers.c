@@ -8,96 +8,6 @@
 #include <errno.h>
 #include <ctype.h>
 
-// Coded by Isaac during Semester 1 excercises
-// Function takes  pointer to string and returns int length
-int str_len(char *str)
-{
-  int valid = 0;
-  int count = 0;
-  while (!valid)
-  {
-    if (*str == '\0')
-    {
-      valid = 1;
-    }
-    else
-    {
-      count++;
-      str++;
-    }
-  }
-  return count;
-}
-
-// Coded by Isaac during Semester 1 excercises
-// function takes 2 pointers to 2 strings and returns 0 if they are equal
-int str_cmp(char *str1, char *str2)
-{
-  if (str_len(str1) != str_len(str2))
-  {
-    return -1;
-  }
-
-  for (int i = 0; i < str_len(str1); i++)
-  {
-
-    if (*(str1 + i) > *(str2 + i))
-    {
-      return 1;
-    }
-
-    if (*(str1 + i) < *(str2 + i))
-    {
-      return -1;
-    }
-  }
-
-  return 0;
-}
-// Coded by Isaac during Semester 1 excercises
-// for use in str_trim
-int whitespace(char c)
-{
-  return (c == ' ' || c == '\t');
-}
-
-// Coded by Isaac during Semester 1 excercises
-// for use in str_trim, iterates through string, removes whitespace charcters as defined in whitespace function
-char *str_trim(char *str)
-{
-  int startpos = 0;
-  int endpos = str_len(str) - 1;
-
-  for (int i = 0; i < str_len(str); i++)
-  {
-
-    if (!whitespace(*(str + i)))
-    {
-      startpos = i;
-      break;
-    }
-  }
-
-  for (int j = endpos; j >= 0; j--)
-  {
-    if (!whitespace(*(str + j)))
-    {
-      endpos = j;
-      break;
-    }
-  }
-
-  if (startpos > endpos)
-  {
-    *str = '\0';
-    return str;
-  }
-
-  *(str + endpos + 1) = '\0';
-  char *newpoint = str + startpos;
-
-  return newpoint;
-}
 
 int str_exec_num(char *input, int index, char *histarr[])
 {
@@ -181,8 +91,8 @@ int add_history(char *histarr[20], int commandIndex, char *command)
   {
     free(histarr[commandIndex]);
   }
-  // malloc array location for size of gthe input
-  histarr[commandIndex] = malloc(str_len(command) + 1);
+  // malloc array location for size of the input
+  histarr[commandIndex] = malloc(strlen(command) + 1);
   // copy command into array
   strcpy(histarr[commandIndex], command);
   // return new index
@@ -229,7 +139,7 @@ int getFromFile(char *histarr[20],char *origDir)
 
   // opens file in read mode
   FILE *fptr = fopen(histfilelocation, "r");
-  // if fails print error return 0 as defualt command index
+  // if fails print error and create file return 0 as defualt command index
   if (fptr == NULL)
   {
     printf("History not found Creating History file \n");
@@ -245,11 +155,13 @@ int getFromFile(char *histarr[20],char *origDir)
 
   int i = 0;
 
+  // while index < 20 and line is succesfully read from file
   while (i < 20 && fgets(buffer, sizeof(buffer), fptr))
   {
 
     // convert the read in line to pointer for using in our addhistory function
     char *bufpoint = buffer;
+    // add read in line to history
     add_history(histarr, i, bufpoint);
 
     i++;
@@ -261,7 +173,6 @@ int getFromFile(char *histarr[20],char *origDir)
   return i % 20;
 }
 
-// function probably shouldnt be void just wrote for quickness
 void sendToFile(int commandindex, char *histarr[20], char *origdir)
 {
 
@@ -293,7 +204,6 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
 
     while (histarr[i] != NULL)
     {
-      printf("passed check %d \n", i);
 
       // print array items to double check has stuff
       //printf("histarr[%d]: %s\n", i, histarr[i]);
@@ -307,17 +217,15 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
 
       i++;
     }
-   
-
   }
 
-  
   // if looped over circle array
   else
   {
     // write from tail to end
     for (int tail = commandindex; tail < 19; tail++)
     {
+      // write to file
       fprintf(fptr, "%s", histarr[tail]);
        // free malloc
        free(histarr[tail]);
@@ -327,6 +235,7 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
     // write from start to tail
     for (int start = 0; start < commandindex; start++)
     {
+      // write to file
       fprintf(fptr, "%s", histarr[start]);
        // free malloc
        free(histarr[start]);
@@ -348,7 +257,7 @@ void addToAlias(char *alias[10][2], char *name, char *command)
     // check if null so strcmp dosnt break
     if (alias[i][0] != NULL)
     {
-      if (str_cmp(alias[i][0], name) == 0)
+      if (strcmp(alias[i][0], name) == 0)
       {
         printf("Error alias already exists\n");
         return;
@@ -365,8 +274,8 @@ void addToAlias(char *alias[10][2], char *name, char *command)
 
       // malloc array location for size of the input
 
-      alias[i][0] = malloc(str_len(name) + 1);
-      alias[i][1] = malloc(str_len(command) + 1);
+      alias[i][0] = malloc(strlen(name) + 1);
+      alias[i][1] = malloc(strlen(command) + 1);
 
       // copy input to array
       strcpy(alias[i][0], name);
@@ -391,7 +300,7 @@ void removeAlias(char *alias[10][2], char *name)
     if (alias[i][0] != NULL)
     {
       // if alias found
-      if (str_cmp(alias[i][0], name) == 0)
+      if (strcmp(alias[i][0], name) == 0)
       {
 
         // free malloc
@@ -416,7 +325,7 @@ void printAlias(char *alias[10][2])
   int count = 0;
   for (int i = 0; i < 10; i++)
   {
-    // check value isnt null (is a gap)
+    // check value isnt null (a gap)
     if (alias[i][0] != NULL)
     {
       printf("%d: %s, %s\n", count, alias[i][0], alias[i][1]);
@@ -455,9 +364,10 @@ strcat(aliasfilelocation, "/.aliases");
   for (int i = 0; i < 10; i++)
   {
 
+    // write non gaps to file
     if (alias[i][0] != NULL && alias[i][1] != NULL)
     {
-      fprintf(fptr, "alias %s %s\n", alias[i][0], alias[i][1]);
+      fprintf(fptr, "%s %s\n", alias[i][0], alias[i][1]);
       // free malloc
       free(alias[i][0]);
       free(alias[i][1]);
@@ -487,33 +397,31 @@ strcat(aliasfilelocation, "/.aliases");
 
   if (fptr == NULL)
   {
+  // if fails print error and create file 
     printf("Alias not found Creating Alias file \n");
     FILE *fptr = fopen(aliasfilelocation, "w");
     fclose(fptr);
     return ;
   }
+  
+  // Temporary buffer for read in line
   char buffer[512];
   int i = 0;
 
+  // while index < 20 and line is succesfully read from file
   while (i < 10 && fgets(buffer, sizeof(buffer), fptr))
   {
 
-    // Tokenize the first word so we can see if its alias in the if statement
-    char *token = strtok(buffer, " \n");
+    // tokenise from read in line (buffer)
 
-    if (token == NULL || strcmp(token, "alias") != 0)
-    {
-      continue; // Skip the lines that don't start with alias
-    }
-
-    char *name = strtok(NULL, " \n");
+    // take name/alias as first thing delimted by a space 
+    char *name = strtok(buffer, " ");
+    // take command as second thing delimited by newline
     char *command = strtok(NULL, "\n");
 
-    if (name != NULL && command != NULL)
-    {
       addToAlias(alias, name, command);
       i++;
-    }
+    
   }
   fclose(fptr);
 }

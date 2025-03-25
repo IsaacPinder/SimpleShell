@@ -7,14 +7,16 @@
 #include <sys/wait.h>  // wait
 #include <errno.h>     // errno
 
+
 char *get_path()
 {
-
+    // returns current file path
     return getenv("PATH");
 }
 
 void set_path(char *Input)
 {
+    // sets file path
     setenv("PATH", Input, 1);
 }
 
@@ -28,7 +30,7 @@ void change_directory(char *dir)
     }
 }
 
-//New Improved History Function
+
 void print_history(char *histarr[20], int commandIndex) {
     //check if history is empty
     if (histarr[0] == NULL) {
@@ -40,11 +42,11 @@ void print_history(char *histarr[20], int commandIndex) {
 
     //checking history has wrapped around
     if (histarr[19] != NULL && commandIndex < 19) {
-        for (int i = commandIndex; i < 20; i++) {
-            printf("%d: %s\n", count++, histarr[i]);
+        for (int tail = commandIndex; tail < 20; tail++) {
+            printf("%d: %s\n", count++, histarr[tail]);
         }
-        for (int i = 0; i < commandIndex; i++) {
-            printf("%d: %s\n", count++, histarr[i]);
+        for (int start = 0; start < commandIndex; start++) {
+            printf("%d: %s\n", count++, histarr[start]);
         }
     } else { 
         //for loop like normal if history hasn't wrapped around

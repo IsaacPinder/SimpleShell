@@ -16,7 +16,7 @@ int str_exec_num(char *input, int index, char *histarr[])
     // checks if number after ! is a digit if not then return -1
     if (isdigit(input[1]) == 0)
     {
-      printf("please enter digit after the '!'")
+      printf("please enter digit after the '!'");
       return -1;
     }
     //isdigit == 0 means digit invalid
@@ -28,7 +28,7 @@ int str_exec_num(char *input, int index, char *histarr[])
 
     if (input[2] != '\0' && input[3] != '\0')
     {
-      printf("null character not detected hence command invalid")
+      printf("null character not detected hence command invalid");
       return -1;
     }
     //creates a variable without first character
@@ -61,19 +61,19 @@ int str_exec_num_minus(char *input1, int index)
       //same as str_exec_num but moved forward to account for extra character
       if (isdigit(input1[2]) == 0)
       {
-        printf("3rd character not valid digit")
+        printf("3rd character not valid digit");
         return -1;
       }
 
       if (input1[3] != '\0' && isdigit(input1[3]) == 0)
       {
-        printf("4th character not digit and not null terminator therefore inavlid")
+        printf("4th character not digit and not null terminator therefore inavlid");
         return -1;
       }
 
       if (input1[3] != '\0' && input1[4] != '\0')
       {
-        printf("Invalid digit")
+        printf("Invalid digit");
         return -1;
       }
       

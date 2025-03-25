@@ -16,7 +16,7 @@
 // tidy up comments
 // remove prints for testing
 // (DONE) remove pre defined functions which we made (aslong as dostn break anything)
-// tidy up comments(comment everything)
+// (DONE)tidy up comments(comment everything)
 // tidy up what belongs in helpers v localfunctions
 
 // QUESTIONS
@@ -31,7 +31,7 @@
 // listing of / all formatted with entry per line and file permissions)?
 
 
-void prompt()
+int main(void)
 {
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
@@ -51,14 +51,15 @@ void prompt()
 
   // alias [i][0] = name alias[i][1] = command
   char *alias[10][2] = {{NULL}, {NULL}};
-  // index of current command
+  // index of current command in history
   int commandIndex = 0;
 
 
 
-  // save Home directory
+  // malloc space for home directory then copy home directory into that space
   char *origDir = malloc(strlen(getenv("HOME"))+1);
   strcpy(origDir, getenv("HOME"));
+
   // print home and success status of changing to home
   printf("\nHomeDir : %s \n\n", origDir);
   printf(" chdir to home success? 0 good: %d \n\n", chdir(origDir));
@@ -67,10 +68,6 @@ void prompt()
   // load history and alias arrays from file
   commandIndex = getFromFile(history,origDir);
   loadAliasFile(alias,origDir);
-
-
-
-
 
 
   // malloc space for original path then copy the path into that space
@@ -100,10 +97,9 @@ void prompt()
      if (line[0] != '!')
      {
        commandIndex = add_history(history, commandIndex, line);
-       printf("added to hist\n");
      }
 
-    // check if input is a alias
+    // check if input is an alias
     // index for start navigating through line
     int charindex = 0;
     // index for navigating through first word of line
@@ -140,7 +136,7 @@ void prompt()
           strcpy(aliascom, alias[i][1]);
           // concatenate aliascom to the rest of the line(from the end of first word)
           strcat(aliascom, &line[charindex]);
-          // copy full line back into line (for tokenisation)
+          // copy full new line back into line (for tokenisation)
           strcpy(line, aliascom);
 
           break;
@@ -148,13 +144,14 @@ void prompt()
       }
     }
 
+    // temp prints
     printf("first word %s \n", firstword);
     printf("line is %s \n", line);
 
-    // tokenise input after it has been added to history
+    // tokenise input after it has been added to history and checked for alias swapping
     tokenise(tokensarr, line);
 
-    // handles history exec prev commands
+    // handles history commands this ensures that wont try and run a history command and normal command 
     if (line[0] == '!')
     {
       // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
@@ -237,7 +234,7 @@ void prompt()
       }
     }
 
-    // EXIT: User input is NOT empty AND first token is "exit" AND second is empty ∂then done looping
+    // EXIT: User input is NOT empty AND first token is "exit" AND second is empty then done looping
     if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
@@ -313,7 +310,7 @@ void prompt()
         print_history(history, commandIndex);
       }
     }
-    // ALIAS checking input isnt empty AND first token is "history"
+    // ALIAS checking input isnt empty AND first token is "alias"
     else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], addaliasstr) == 0)
     {
       // if only alias then call printAlias
@@ -339,7 +336,7 @@ void prompt()
         addToAlias(alias, tokensarr[1], tokensarr[2]);
       }
     }
-    // UNALIAS checking input isnt empty AND first token is "history"
+    // UNALIAS checking input isnt empty AND first token is "unalias"
     else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], unaliasstr) == 0)
     {
 
@@ -402,16 +399,10 @@ void prompt()
   free(origPath);
   origPath = NULL;
 
-  // free malloc
+  // free malloc for dir
   free(origDir);
   origDir = NULL;
 
   // exit confirmation message
-  printf("yay u left\n");
-}
-
-int main(void)
-{
-  prompt();
-  return 0;
+  printf("Shell exiting\n");
 }

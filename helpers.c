@@ -440,7 +440,7 @@ char aliasfilelocation[512];
 // copy home dir to temp variable
 strcpy(aliasfilelocation, origdir);
 // concatenate hist to the rest of the line(from the end of first word)
-strcat(aliasfilelocation, "/.hist_list");
+strcat(aliasfilelocation, "/.aliases");
 
 
   FILE *fptr;
@@ -479,7 +479,7 @@ char aliasfilelocation[512];
 // copy home dir to temp variable
 strcpy(aliasfilelocation, origdir);
 // concatenate hist to the rest of the line(from the end of first word)
-strcat(aliasfilelocation, "/.hist_list");
+strcat(aliasfilelocation, "/.aliases");
 
   FILE *fptr;
   // opens file

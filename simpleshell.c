@@ -2,25 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
-#include <unistd.h>    
-#include <sys/types.h> 
-#include <sys/wait.h>  
-#include <errno.h>     
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
 
 // ** Commands for compiling and running **
-// gcc simpleshell.c helpers.c localfunctions.c -pedantic -Wall -o simpleshell
+//  gcc simpleshell.c helpers.c -pedantic -Wall -o simpleshell
 /// ./simpleshell
-
-// NOTES FOR QUALITY CHECK
-// Double check evrything
-// edge case where calling a history function gives error from fork when history empty
 
 
 int main(void)
 {
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
-  
 
   // array to hold 20 history items set items to null (so history is empty at start)
   char *history[20] = {NULL};
@@ -34,9 +29,8 @@ int main(void)
   char *origDir = malloc(strlen(getenv("HOME")) + 1);
   strcpy(origDir, getenv("HOME"));
 
-
   // load history and alias arrays from file
-  commandIndex = getFromFile(history, origDir);
+  commandIndex = getHistFromFile(history, origDir);
   loadAliasFile(alias, origDir);
 
   // malloc space for original path then copy the path into that space
@@ -120,100 +114,121 @@ int main(void)
       tokenise(tokensarr, temp);
     }
 
-    // handles history commands this ensures that wont try and run a history command and normal command at same time
-    if (line[0] == '!')
+    // !HISTORY COMMANDS, upon an input validation error we 'continue' skipping this loop in order to avoid
+    // falling through to the fork and exectuting a line we have already provided feedback for
+
+    // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
+    if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "!!") == 0)
     {
-      // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
-      if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "!!") == 0)
+      if (tokensarr[1] != NULL)
       {
-        if (tokensarr[1] != NULL)
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+        continue;
+      }
+      else if (history[0] == NULL)
+      {
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+        continue;
+      }
+      else
+      {
+        char *histexecline = history[(commandIndex - 1) % 20];
+
+        // use temp copy of histexecline so that we dont alter(tokenise) the original array
+        char temp[512];
+        strcpy(temp, histexecline);
+        tokenise(tokensarr, temp);
+      }
+    }
+    // EXECUTE-COMMAND-MINUS checking input isnt empty AND first token is '!-n'
+    else if ((tokensarr[0] != NULL) && check_hist_exec_minus(tokensarr[0]))
+    {
+      if (tokensarr[1] != NULL)
+      {
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+        continue;
+      }
+      else if (history[0] == NULL)
+      {
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+        continue;
+      }
+      else
+      {
+        // returns the number to execute
+        int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
+
+        // if input validation error occured continue (str_exec func will print the error)
+        if (num_to_exec == -1)
         {
-          // too many arguments
-          printf("ERROR there is too many arguments given, please amend your command\n");
+          continue;
         }
-        else if (history[0] == NULL)
+
+        char *histexecline = history[num_to_exec];
+        if (histexecline == NULL)
         {
-          // no commands in history
-          printf("ERROR there is no commands in history, please execute some commands\n");
+          printf("History is empty at that index\n");
+          continue;
         }
         else
         {
-          char *histexecline = history[(commandIndex - 1) % 20];
-
           // use temp copy of histexecline so that we dont alter(tokenise) the original array
           char temp[512];
           strcpy(temp, histexecline);
           tokenise(tokensarr, temp);
         }
       }
-      // EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
-      else if ((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0], commandIndex) >= 0)
+    }
+    // EXECUTE-COMMAND-NUM checking input isnt empty AND first token is "!n"
+    else if ((tokensarr[0] != NULL) && check_hist_exec(tokensarr[0]))
+    {
+      if (tokensarr[1] != NULL)
       {
-        if (tokensarr[1] != NULL)
-        {
-          // too many arguments
-          printf("ERROR there is too many arguments given, please amend your command\n");
-        }
-        else if (history[0] == NULL)
-        {
-          // no commands in history
-          printf("ERROR there is no commands in history, please execute some commands\n");
-        }
-        else
-        {
-          // returns the number to execute
-          int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
-          char *histexecline = history[num_to_exec];
-          if (histexecline == NULL)
-          {
-            printf("History is empty at that index\n");
-          }
-          else
-          {
-            // use temp copy of histexecline so that we dont alter(tokenise) the original array
-            char temp[512];
-            strcpy(temp, histexecline);
-            tokenise(tokensarr, temp);
-          }
-        }
+        // too many arguments
+        printf("ERROR there is too many arguments given, please amend your command\n");
+        continue;
       }
-      // EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
-      else if ((tokensarr[0] != NULL) && str_exec_num(tokensarr[0], commandIndex, history) >= 0)
+      else if (history[0] == NULL)
       {
-        if (tokensarr[1] != NULL)
+        // no commands in history
+        printf("ERROR there is no commands in history, please execute some commands\n");
+        continue;
+      }
+      else
+      {
+        // returns the number to execute
+        int num_to_exec = str_exec_num(tokensarr[0], commandIndex, history);
+
+        // if input validation error occured continue (str_exec func will print the error)
+        if (num_to_exec == -1)
         {
-          // too many arguments
-          printf("ERROR there is too many arguments given, please amend your command\n");
+          continue;
         }
-        else if (history[0] == NULL)
+
+        // minus one to match with the printing starting from 1 instead of 0
+        char *histexecline = history[(num_to_exec - 1)];
+        if (histexecline == NULL)
         {
-          // no commands in history
-          printf("ERROR there is no commands in history, please execute some commands\n");
+          printf("History is empty at that index\n");
+          continue;
         }
         else
         {
-          // returns the number to execute
-          int num_to_exec = str_exec_num(tokensarr[0], commandIndex, history);
-          // minus one to match with the printing starting from 1 instead of 0
-          char *histexecline = history[(num_to_exec - 1)];
-          if (histexecline == NULL)
-          {
-            printf("History is empty at that index\n");
-          }
-          else
-          {
 
-            // use temp copy of histexecline so that we dont alter(tokenise) the originasl array
-            char temp[512];
-            strcpy(temp, histexecline);
-            tokenise(tokensarr, temp);
-          }
+          // use temp copy of histexecline so that we dont alter(tokenise) the originasl array
+          char temp[512];
+          strcpy(temp, histexecline);
+          tokenise(tokensarr, temp);
         }
       }
     }
 
     // EXIT: User input is NOT empty AND first token is "exit" AND second is empty then done looping
-     if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "exit") == 0 && tokensarr[1] == NULL)
+    if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "exit") == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }
@@ -306,8 +321,8 @@ int main(void)
       {
 
         // to be able to accept multiple parameters for the aliased command
-        //loop through tokens and concatnete them into one line
-        
+        // loop through tokens and concatnete them into one line
+
         // temp variable for concatenating tokens into
         char temp[512] = "";
         // loop for all tokens (skipping first 2 cos (alias name ...)
@@ -381,7 +396,7 @@ int main(void)
   }
 
   // save history and alias array to file
-  sendToFile(commandIndex, history, origDir);
+  sendHistToFile(commandIndex, history, origDir);
   saveAliasToFile(alias, origDir);
 
   // set currentpath to orignalpath then free malloc

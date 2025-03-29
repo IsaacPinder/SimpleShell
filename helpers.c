@@ -31,11 +31,19 @@ void change_directory(char *dir)
     }
 }
 
+int check_hist_exec(char *input) 
+{
+return input[0] == '!';
+}
+  
+int check_hist_exec_minus(char *input)
+{
+return input[0] == '!' && input[1] == '-';
+}
+
 int str_exec_num(char *input, int index, char *histarr[])
 {
-  // check first char is '!'
-  if (input[0] == '!' && input[1] != '-')
-  {
+
     // checks if number after ! (2nd char) is a digit if not then return -1
     if (isdigit(input[1]) == 0)
     {
@@ -74,23 +82,16 @@ int str_exec_num(char *input, int index, char *histarr[])
     }
     else
     {
-      printf("Number out of range\n");
+      printf("Number out of range 1-20\n");
       return -1;
     }
-  }
 
   return -1;
 }
 
 int str_exec_num_minus(char *input1, int index)
 {
-  // check first char is '!'
-  if (input1[0] == '!')
-  {
-    // check 2nd char is -
-    if (input1[1] == '-')
-    {
-
+ 
       // checks if number after - (3rd char)is a digit if not then return -1
       if (isdigit(input1[2]) == 0)
       {
@@ -124,11 +125,9 @@ int str_exec_num_minus(char *input1, int index)
       }
       else
       {
-        printf("Number out of range\n");
+        printf("Number out of range 1-20\n");
         return -1;
       }
-    }
-  }
   return -1;
 }
 
@@ -201,7 +200,7 @@ void tokenise(char *tokensarr[], char *line)
   tokensarr[toki] = NULL;
 }
 
-int getFromFile(char *histarr[20], char *origDir)
+int getHistFromFile(char *histarr[20], char *origDir)
 {
 
   // make a tempory copy of home dir location (to not overwrite original)
@@ -244,7 +243,7 @@ int getFromFile(char *histarr[20], char *origDir)
   return i % 20;
 }
 
-void sendToFile(int commandindex, char *histarr[20], char *origdir)
+void sendHistToFile(int commandindex, char *histarr[20], char *origdir)
 {
 
   // make a tempory copy of home dir location (to not overwrite original)

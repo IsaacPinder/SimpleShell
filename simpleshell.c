@@ -11,7 +11,6 @@
 //  gcc simpleshell.c helpers.c -pedantic -Wall -o simpleshell
 /// ./simpleshell
 
-
 int main(void)
 {
   // int exit to for use in main loop to determine if we should continue running
@@ -65,8 +64,8 @@ int main(void)
     // tokenise input after it has been added to history
     tokenise(tokensarr, line);
 
-    // dont try to invoke an alias if user is trying to add or remove an alias
-    if ( tokensarr[0] != NULL && strcmp(tokensarr[0], "alias") != 0 && strcmp(tokensarr[0], "unalias") != 0)
+    // dont try to invoke an alias if user is trying to remove an alias (if change unalias then stuck)
+    if (tokensarr[0] != NULL && strcmp(tokensarr[0], "unalias") != 0)
     {
 
       // loop through alias list
@@ -317,6 +316,13 @@ int main(void)
         // not enough arguments
         printf("ERROR there is not enough arguments to add alias include a name and the command\n");
       }
+      // prevent attempting to alias 'unalias' as could be stuck unable to unalias
+      else if (strcmp(tokensarr[1], "unalias") == 0)
+      {
+        // dont allow to alias 'unlias'
+        printf("ERROR you cannot use 'unalias' as an alias\n");
+      }
+
       else
       {
 

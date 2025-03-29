@@ -26,7 +26,8 @@ void change_directory(char *dir)
     // run chdir if failed then print error
     if (chdir(dir) == -1)
     {
-        perror("cd failed");
+        printf("cd: %s: %s\n", dir, strerror(errno));
+
     }
 }
 

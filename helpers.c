@@ -8,7 +8,6 @@
 #include <errno.h>
 #include <ctype.h>
 
-
 int str_exec_num(char *input, int index, char *histarr[])
 {
   // check first char is '!'
@@ -20,8 +19,8 @@ int str_exec_num(char *input, int index, char *histarr[])
       printf("please enter digit after the '!'\n");
       return -1;
     }
-    //isdigit == 0 means digit invalid
-    // if 3rd character isnt empty and has something which isnt a number in it
+    // isdigit == 0 means digit invalid
+    //  if 3rd character isnt empty and has something which isnt a number in it
     if (input[2] != '\0' && isdigit(input[2]) == 0)
     {
       printf("character in 3rd position is not a number\n");
@@ -34,23 +33,24 @@ int str_exec_num(char *input, int index, char *histarr[])
       printf("error: too many digits\n");
       return -1;
     }
-    //creates a variable without first character(!)
+    // creates a variable without first character(!)
     int n = atoi(input + 1);
     // checks range of n to
     if (n >= 1 && n <= 20)
     {
       if (histarr[19] != NULL)
       {
-      //ciruclar array adjusted position
+        // ciruclar array adjusted position
         return (n + index) % 20;
       }
       else
       {
-        //otherwise simply return digit
+        // otherwise simply return digit
         return n;
       }
     }
-    else{
+    else
+    {
       printf("Number out of range\n");
       return -1;
     }
@@ -67,7 +67,7 @@ int str_exec_num_minus(char *input1, int index)
     // check 2nd char is -
     if (input1[1] == '-')
     {
-      
+
       // checks if number after - (3rd char)is a digit if not then return -1
       if (isdigit(input1[2]) == 0)
       {
@@ -75,31 +75,32 @@ int str_exec_num_minus(char *input1, int index)
         return -1;
       }
 
-      //isdigit == 0 means digit invalid
-      // if 4th character isnt empty and has something which isnt a number in it
+      // isdigit == 0 means digit invalid
+      //  if 4th character isnt empty and has something which isnt a number in it
       if (input1[3] != '\0' && isdigit(input1[3]) == 0)
       {
         printf("4th character not digit and not null terminator therefore inavlid\n");
         return -1;
       }
 
-    // if both the 3rd and 4th are not end of string then error(too many characters)
-    if (input1[3] != '\0' && input1[4] != '\0')
+      // if both the 3rd and 4th are not end of string then error(too many characters)
+      if (input1[3] != '\0' && input1[4] != '\0')
       {
         printf("error: too many digits\n");
         return -1;
       }
-      
-      //creates a variable without first character(!) e.g !-12 = -12
+
+      // creates a variable without first character(!) e.g !-12 = -12
       int n = atoi(input1 + 1);
       // n is a negative number at this point see above comment
       // check is within range
       if (n <= -1 && n >= -20)
       {
-        //ciruclar array adjusted position
+        // ciruclar array adjusted position
         return (index + (n + 20)) % 20;
       }
-      else{
+      else
+      {
         printf("Number out of range\n");
         return -1;
       }
@@ -150,7 +151,7 @@ void tokenise(char *tokensarr[], char *line)
   tokensarr[toki] = NULL;
 }
 
-int getFromFile(char *histarr[20],char *origDir)
+int getFromFile(char *histarr[20], char *origDir)
 {
 
   // make a tempory copy of home dir location (to not overwrite original)
@@ -214,13 +215,12 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
   // opens file
   fptr = fopen(histfilelocation, "w");
 
-
   if (fptr == NULL)
   {
     printf("\nError opening file\n");
     return;
   }
-  
+
   // sends what is in histarr to file
   // if last item is empty (not looped over circle) then write for length of history
   if (histarr[19] == NULL)
@@ -230,14 +230,14 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
     {
 
       // print array items to double check has stuff
-      //printf("histarr[%d]: %s\n", i, histarr[i]);
+      // printf("histarr[%d]: %s\n", i, histarr[i]);
 
-       fprintf(fptr, "%s", histarr[i]);
+      fprintf(fptr, "%s", histarr[i]);
 
-       // free malloc
-       free(histarr[i]);
-       // set to null
-       histarr[i] = NULL;
+      // free malloc
+      free(histarr[i]);
+      // set to null
+      histarr[i] = NULL;
 
       i++;
     }
@@ -251,20 +251,20 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
     {
       // write to file
       fprintf(fptr, "%s", histarr[tail]);
-       // free malloc
-       free(histarr[tail]);
-       // set to null
-       histarr[tail] = NULL;
+      // free malloc
+      free(histarr[tail]);
+      // set to null
+      histarr[tail] = NULL;
     }
     // write from start to tail
     for (int start = 0; start < commandindex; start++)
     {
       // write to file
       fprintf(fptr, "%s", histarr[start]);
-       // free malloc
-       free(histarr[start]);
-       // set to null
-       histarr[start] = NULL;
+      // free malloc
+      free(histarr[start]);
+      // set to null
+      histarr[start] = NULL;
     }
   }
 
@@ -316,6 +316,8 @@ void addToAlias(char *alias[10][2], char *name, char *command)
 
 void removeAlias(char *alias[10][2], char *name)
 {
+  // count to check how many alises there is (to check if empty error is needed)
+  int count = 0;
   // loop through entire list
   for (int i = 0; i < 10; i++)
   {
@@ -323,10 +325,13 @@ void removeAlias(char *alias[10][2], char *name)
     // check if null so strcmp dosnt break
     if (alias[i][0] != NULL)
     {
+      // an alias exits so increment
+      count++;
       // if alias found
       if (strcmp(alias[i][0], name) == 0)
       {
 
+       printf("Removing alias %s\n", alias[i][0]);
         // free malloc
         free(alias[i][0]);
         free(alias[i][1]);
@@ -339,8 +344,17 @@ void removeAlias(char *alias[10][2], char *name)
       }
     }
   }
-  // if reach end of loop alias not found
-  printf("Alias not found\n");
+
+  // if no items in alias
+  if (count == 0)
+  {
+    printf("Alias is empty\n");
+  }
+  else
+  {
+    // if reach end of loop alias not found
+    printf("Alias not found\n");
+  }
 }
 
 void printAlias(char *alias[10][2])
@@ -367,14 +381,13 @@ void printAlias(char *alias[10][2])
 void saveAliasToFile(char *alias[10][2], char *origdir)
 {
 
-// make a tempory copy of home dir location (to not overwrite original)
-char aliasfilelocation[512];
+  // make a tempory copy of home dir location (to not overwrite original)
+  char aliasfilelocation[512];
 
-// copy home dir to temp variable
-strcpy(aliasfilelocation, origdir);
-// concatenate hist to the rest of the line(from the end of first word)
-strcat(aliasfilelocation, "/.aliases");
-
+  // copy home dir to temp variable
+  strcpy(aliasfilelocation, origdir);
+  // concatenate hist to the rest of the line(from the end of first word)
+  strcat(aliasfilelocation, "/.aliases");
 
   FILE *fptr;
   // opens file
@@ -408,12 +421,12 @@ void loadAliasFile(char *alias[10][2], char *origdir)
 {
 
   // make a tempory copy of home dir location (to not overwrite original)
-char aliasfilelocation[512];
+  char aliasfilelocation[512];
 
-// copy home dir to temp variable
-strcpy(aliasfilelocation, origdir);
-// concatenate hist to the rest of the line(from the end of first word)
-strcat(aliasfilelocation, "/.aliases");
+  // copy home dir to temp variable
+  strcpy(aliasfilelocation, origdir);
+  // concatenate hist to the rest of the line(from the end of first word)
+  strcat(aliasfilelocation, "/.aliases");
 
   FILE *fptr;
   // opens file
@@ -421,13 +434,13 @@ strcat(aliasfilelocation, "/.aliases");
 
   if (fptr == NULL)
   {
-  // if fails print error and create file 
+    // if fails print error and create file
     printf("Alias not found Creating Alias file \n");
     FILE *fptr = fopen(aliasfilelocation, "w");
     fclose(fptr);
-    return ;
+    return;
   }
-  
+
   // Temporary buffer for read in line
   char buffer[512];
   int i = 0;
@@ -438,14 +451,13 @@ strcat(aliasfilelocation, "/.aliases");
 
     // tokenise from read in line (buffer)
 
-    // take name/alias as first thing delimted by a space 
+    // take name/alias as first thing delimted by a space
     char *name = strtok(buffer, " ");
     // take command as second thing delimited by newline
     char *command = strtok(NULL, "\n");
 
-      addToAlias(alias, name, command);
-      i++;
-    
+    addToAlias(alias, name, command);
+    i++;
   }
   fclose(fptr);
 }

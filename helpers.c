@@ -283,7 +283,20 @@ void addToAlias(char *alias[10][2], char *name, char *command)
     {
       if (strcmp(alias[i][0], name) == 0)
       {
-        printf("Error alias already exists\n");
+        printf("Error alias already exists overwriting\n");
+
+         // free malloc
+         free(alias[i][0]);
+         free(alias[i][1]);
+
+          // malloc array location for size of the input
+         alias[i][0] = malloc(strlen(name) + 1);
+         alias[i][1] = malloc(strlen(command) + 1);
+   
+         // copy input to array
+         strcpy(alias[i][0], name);
+         strcpy(alias[i][1], command);
+
         return;
       }
     }
@@ -325,8 +338,9 @@ void removeAlias(char *alias[10][2], char *name)
     // check if null so strcmp dosnt break
     if (alias[i][0] != NULL)
     {
-      // an alias exits so increment
+      // an alias exists so increment
       count++;
+
       // if alias found
       if (strcmp(alias[i][0], name) == 0)
       {
@@ -337,7 +351,7 @@ void removeAlias(char *alias[10][2], char *name)
         free(alias[i][1]);
         // set to null
         alias[i][0] = NULL;
-        alias[i][0] = NULL;
+        alias[i][1] = NULL;
 
         // return once found
         return;

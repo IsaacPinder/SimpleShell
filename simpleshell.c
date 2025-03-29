@@ -23,13 +23,12 @@
 // (DONE, TEST) do we have to free our allocated mallocs(that are saved to files, when we exit)?????? ( yes always)
 // (DONE)when ctrl d pressed do add to history (no handeled before checked same time as checking less than 512, exit can be added but must be justified if it is or isnt)
 // (DONE TEST)file paths????? for specefic machine .aliases??? .hist_list??? (make fieles definable use home directory insted of what weve got(hm dir /file) also change to histlist, snprintf for joining home directory and text file)
-// is include 
-//fix print hist
+// is include
+// fix print hist
 
-// STAGE1 FINAL TEST ?Is the input tokenized correctly (try ‘ls<tab>-lF;.&..>.<..|/<tab>fksdk’ 
-//it should print an error for fksdk and the listings of . and .. twice plus the
+// STAGE1 FINAL TEST ?Is the input tokenized correctly (try ‘ls<tab>-lF;.&..>.<..|/<tab>fksdk’
+// it should print an error for fksdk and the listings of . and .. twice plus the
 // listing of / all formatted with entry per line and file permissions)?
-
 
 int main(void)
 {
@@ -54,24 +53,20 @@ int main(void)
   // index of current command in history
   int commandIndex = 0;
 
-
-
   // malloc space for home directory then copy home directory into that space
-  char *origDir = malloc(strlen(getenv("HOME"))+1);
+  char *origDir = malloc(strlen(getenv("HOME")) + 1);
   strcpy(origDir, getenv("HOME"));
 
   // print home and success status of changing to home
   printf("\nHomeDir : %s \n\n", origDir);
   printf(" chdir to home success? 0 good: %d \n\n", chdir(origDir));
 
-  
   // load history and alias arrays from file
-  commandIndex = getFromFile(history,origDir);
-  loadAliasFile(alias,origDir);
-
+  commandIndex = getFromFile(history, origDir);
+  loadAliasFile(alias, origDir);
 
   // malloc space for original path then copy the path into that space
-  char *origPath = malloc(strlen(getenv("PATH"))+1);
+  char *origPath = malloc(strlen(getenv("PATH")) + 1);
   strcpy(origPath, getenv("PATH"));
   printf("Original_Path : %s \n\n", origPath);
 
@@ -93,65 +88,65 @@ int main(void)
       break;
     }
 
-     // if input is not a history command or a newlineadd it to history
-     if (line[0] != '!' && line[0] != '\n')
-     {
-       commandIndex = add_history(history, commandIndex, line);
-     }
-
-    // check if input is an alias
-    // index for start navigating through line
-    int charindex = 0;
-    // index for navigating through first word of line
-    int fwordindex = 0;
-    char firstword[512];
-    // skip over leading whitespace in line
-    while (line[charindex] == ' ')
+    // if input is not a history command or a newlineadd it to history
+    if (line[0] != '!' && line[0] != '\n')
     {
-      charindex++;
-    }
-    // copy charcters from line over to firstword until we reach end of first word(whitespace or \n or \0)
-    while (line[charindex] != ' ' && line[charindex] != '\0' && line[charindex] != '\n')
-    {
-      firstword[fwordindex] = line[charindex];
-      charindex++;
-      fwordindex++;
-    }
-    // add end of string char to firstword
-    firstword[fwordindex] = '\0';
-
-    // loop through alias array
-    for (int i = 0; i < 10; i++)
-    {
-      // if alias not empty(gap in array)
-      if (alias[i][0] != NULL)
-      {
-        // if stored alias is the same as first word inputed
-        if ((strcmp(alias[i][0], firstword) == 0))
-        {
-
-          // make a tempory copy of alias command (to not overwrite original)
-          char aliascom[512];
-          // copy original alias command to aliascom
-          strcpy(aliascom, alias[i][1]);
-          // concatenate aliascom to the rest of the line(from the end of first word)
-          strcat(aliascom, &line[charindex]);
-          // copy full new line back into line (for tokenisation)
-          strcpy(line, aliascom);
-
-          break;
-        }
-      }
+      commandIndex = add_history(history, commandIndex, line);
     }
 
-    // temp prints
-    printf("first word %s \n", firstword);
-    printf("line is %s \n", line);
-
-    // tokenise input after it has been added to history and checked for alias swapping
+    // tokenise input after it has been added to history
     tokenise(tokensarr, line);
 
-    // handles history commands this ensures that wont try and run a history command and normal command 
+    // dont try to invoke an alias if user is trying to add or remove an alias
+    if (strcmp(tokensarr[0], "alias") != 0 && strcmp(tokensarr[0], "unalias") != 0)
+    {
+
+      // loop through alias list
+      for (int i = 0; i < 10; i++)
+      {
+        // loop for all tokens
+        for (int j = 0; j < 50 && tokensarr[j] != NULL; j++)
+        {
+
+          // if alias not empty(not gap in array)
+          if (alias[i][0] != NULL)
+          {
+            // if stored alias is the same as a Token inputed
+            if ((strcmp(alias[i][0], tokensarr[j]) == 0))
+            {
+
+              // copy alias command into the relevent token overwriting it
+              strcpy(tokensarr[j], alias[i][1]);
+            }
+          }
+        }
+      }
+
+      // once we have replaced a token with its relevent alias command we have to retokenise
+      // because by replacing a token with alias command we could replace a singular token with an untokenised line
+      // e.g token[5] = "ls -a" therefor for the program to execute this must be broken into seperate "ls" "-a" tokens
+      // so we concatenate everything into one line and retokensie
+
+      // temp variable for concatenating every token
+      char temp[512] = "";
+      // loop through every token
+      for (int i = 0; i < 50 && tokensarr[i] != NULL; i++)
+      {
+        // Add space between words if not first word
+        if (i > 0)
+        {
+          strcat(temp, " ");
+        }
+
+        // concatenate every token into temp string
+        strcat(temp, tokensarr[i]);
+      }
+
+      // once all tokens have been concatented into temp line retokenise temp linne
+      tokenise(tokensarr, temp);
+    }
+
+    // handles history commands this ensures that wont try and run a history command and normal command
     if (line[0] == '!')
     {
       // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
@@ -172,10 +167,11 @@ int main(void)
           char *histexecline = history[(commandIndex - 1) % 20];
           printf("current line to execute from hist %s \n", histexecline);
 
-            // use temp copy of histexecline so that we dont alter(tokenise) the original array
-            char temp[512];
-            strcpy(temp,histexecline);
-            tokenise(tokensarr, temp);        }
+          // use temp copy of histexecline so that we dont alter(tokenise) the original array
+          char temp[512];
+          strcpy(temp, histexecline);
+          tokenise(tokensarr, temp);
+        }
       }
       // EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
       else if ((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0], commandIndex) >= 0)
@@ -205,8 +201,9 @@ int main(void)
 
             // use temp copy of histexecline so that we dont alter(tokenise) the original array
             char temp[512];
-            strcpy(temp,histexecline);
-            tokenise(tokensarr, temp);          }
+            strcpy(temp, histexecline);
+            tokenise(tokensarr, temp);
+          }
         }
       }
       // EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
@@ -227,7 +224,7 @@ int main(void)
           // returns the number to execute
           int num_to_exec = str_exec_num(tokensarr[0], commandIndex, history);
           // minus one to match with the printing starting from 1 instead of 0
-          char *histexecline = history[(num_to_exec-1)];
+          char *histexecline = history[(num_to_exec - 1)];
           if (histexecline == NULL)
           {
             printf("History is empty at that index\n");
@@ -238,12 +235,11 @@ int main(void)
 
             // use temp copy of histexecline so that we dont alter(tokenise) the originasl array
             char temp[512];
-            strcpy(temp,histexecline);
+            strcpy(temp, histexecline);
             tokenise(tokensarr, temp);
           }
         }
       }
-      
     }
 
     // EXIT: User input is NOT empty AND first token is "exit" AND second is empty then done looping
@@ -336,16 +332,29 @@ int main(void)
         // not enough arguments
         printf("ERROR there is not enough arguments to add alias include a name and the command\n");
       }
-      // else if 3rd token is not empty (too many arguments)
-      else if (tokensarr[3] != NULL)
-      {
-        // too many arguments
-        printf("ERROR there is too many arguments given, please amend your command\n");
-      }
-      // else add alias
       else
       {
-        addToAlias(alias, tokensarr[1], tokensarr[2]);
+
+        // to be able to accept multiple parameters for the aliased command
+        //loop through tokens and concatnete them into one line
+        
+        // temp variable for concatenating tokens into
+        char temp[512] = "";
+        // loop for all tokens (skipping first 2 cos (alias name ...)
+        for (int i = 2; i < 50 && tokensarr[i] != NULL; i++)
+        {
+
+          // Add space between words
+          if (i > 2)
+          {
+            strcat(temp, " ");
+          }
+
+          // concatenate every token into one line
+          strcat(temp, tokensarr[i]);
+        }
+        // add concatenated line to alias as command
+        addToAlias(alias, tokensarr[1], temp);
       }
     }
     // UNALIAS checking input isnt empty AND first token is "unalias"
@@ -403,7 +412,7 @@ int main(void)
 
   // save history and alias array to file
   sendToFile(commandIndex, history, origDir);
-  saveAliasToFile(alias,origDir);
+  saveAliasToFile(alias, origDir);
 
   // set currentpath to orignalpath then free malloc
   set_path(origPath);

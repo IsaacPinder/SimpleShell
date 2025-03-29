@@ -134,7 +134,7 @@ int main(void)
       }
       else
       {
-        char *histexecline = history[(commandIndex - 1) % 20];
+        char *histexecline = history[(commandIndex - 1 + 20) % 20];
 
         // use temp copy of histexecline so that we dont alter(tokenise) the original array
         char temp[512];

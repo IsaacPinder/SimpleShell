@@ -31,11 +31,30 @@ void change_directory(char *dir)
     }
 }
 
+int checkboundarynum(char *input2) 
+{
+int flag = 0;
+if (input2[0] == '!' && input2[1] != '-'){
+return 1;
+} else {
+  return 0;
+}
+  
+}
+int checkboundaryminus(char *input3)
+{
+int flag = 0;
+if (input3[0] == '!' && input3[1] == '-'){
+return 1;
+} else {
+    return 0;
+}
+}
+
+
 int str_exec_num(char *input, int index, char *histarr[])
 {
-  // check first char is '!'
-  if (input[0] == '!' && input[1] != '-')
-  {
+
     // checks if number after ! (2nd char) is a digit if not then return -1
     if (isdigit(input[1]) == 0)
     {
@@ -77,20 +96,13 @@ int str_exec_num(char *input, int index, char *histarr[])
       printf("Number out of range\n");
       return -1;
     }
-  }
 
   return -1;
 }
 
 int str_exec_num_minus(char *input1, int index)
 {
-  // check first char is '!'
-  if (input1[0] == '!')
-  {
-    // check 2nd char is -
-    if (input1[1] == '-')
-    {
-
+ 
       // checks if number after - (3rd char)is a digit if not then return -1
       if (isdigit(input1[2]) == 0)
       {
@@ -127,8 +139,6 @@ int str_exec_num_minus(char *input1, int index)
         printf("Number out of range\n");
         return -1;
       }
-    }
-  }
   return -1;
 }
 

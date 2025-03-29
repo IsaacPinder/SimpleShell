@@ -12,7 +12,7 @@
 int str_exec_num(char *input, int index, char *histarr[])
 {
   // check first char is '!'
-  if (input[0] == '!')
+  if (input[0] == '!' && input[1] != '-')
   {
     // checks if number after ! (2nd char) is a digit if not then return -1
     if (isdigit(input[1]) == 0)

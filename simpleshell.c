@@ -171,7 +171,42 @@ int main(void)
         {
           char *histexecline = history[(commandIndex - 1) % 20];
           printf("current line to execute from hist %s \n", histexecline);
-          tokenise(tokensarr, histexecline);
+
+            // use temp copy of histexecline so that we dont alter(tokenise) the original array
+            char temp[512];
+            strcpy(temp,histexecline);
+            tokenise(tokensarr, temp);        }
+      }
+      // EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
+      else if ((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0], commandIndex) >= 0)
+      {
+        if (tokensarr[1] != NULL)
+        {
+          // too many arguments
+          printf("ERROR there is too many arguments given, please amend your command\n");
+        }
+        else if (history[0] == NULL)
+        {
+          // no commands in history
+          printf("ERROR there is no commands in history, please execute some commands\n");
+        }
+        else
+        {
+          // returns the number to execute
+          int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
+          char *histexecline = history[num_to_exec];
+          if (histexecline == NULL)
+          {
+            printf("History is empty at that index\n");
+          }
+          else
+          {
+            printf("current line to execute from hist %s \n", histexecline);
+
+            // use temp copy of histexecline so that we dont alter(tokenise) the original array
+            char temp[512];
+            strcpy(temp,histexecline);
+            tokenise(tokensarr, temp);          }
         }
       }
       // EXECUTE-COMMAND-NUM checking input isnt empty AND input is "!n" use n to execute comand
@@ -191,7 +226,7 @@ int main(void)
         {
           // returns the number to execute
           int num_to_exec = str_exec_num(tokensarr[0], commandIndex, history);
-          // add one to match with the printing starting from 1 instead of 0
+          // minus one to match with the printing starting from 1 instead of 0
           char *histexecline = history[(num_to_exec-1)];
           if (histexecline == NULL)
           {
@@ -200,43 +235,19 @@ int main(void)
           else
           {
             printf("current line to execute from hist %s \n", histexecline);
-            tokenise(tokensarr, histexecline);
+
+            // use temp copy of histexecline so that we dont alter(tokenise) the originasl array
+            char temp[512];
+            strcpy(temp,histexecline);
+            tokenise(tokensarr, temp);
           }
         }
       }
-      // EXECUTE-COMMAND-MINUS checking input isnt empty AND input is '!-n' use a subtracted n to execute comand
-      else if ((tokensarr[0] != NULL) && str_exec_num_minus(tokensarr[0], commandIndex) >= 0)
-      {
-        if (tokensarr[1] != NULL)
-        {
-          // too many arguments
-          printf("ERROR there is too many arguments given, please amend your command\n");
-        }
-        else if (history[0] == NULL)
-        {
-          // no commands in history
-          printf("ERROR there is no commands in history, please execute some commands\n");
-        }
-        else
-        {
-          // returns the number to execute
-          int num_to_exec = str_exec_num_minus(tokensarr[0], commandIndex);
-          char *histexecline = history[num_to_exec - 1];
-          if (histexecline == NULL)
-          {
-            printf("History is empty at that index\n");
-          }
-          else
-          {
-            printf("current line to execute from hist %s \n", histexecline);
-            tokenise(tokensarr, histexecline);
-          }
-        }
-      }
+      
     }
 
     // EXIT: User input is NOT empty AND first token is "exit" AND second is empty then done looping
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
+    if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }

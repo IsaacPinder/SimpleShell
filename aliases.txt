@@ -1,2 +1,0 @@
-alias batman ls
-alias robin pwd

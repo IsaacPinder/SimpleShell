@@ -2,11 +2,34 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
-#include <unistd.h>    // fork, execl
-#include <sys/types.h> // pid_t datatype
-#include <sys/wait.h>  // wait
+#include <unistd.h>    
+#include <sys/types.h> 
+#include <sys/wait.h>  
 #include <errno.h>
 #include <ctype.h>
+
+char *get_path()
+{
+    // returns current file path
+    return getenv("PATH");
+}
+
+void set_path(char *Input)
+{
+    // sets file path
+    setenv("PATH", Input, 1);
+}
+
+void change_directory(char *dir)
+{
+
+    // run chdir if failed then print error
+    if (chdir(dir) == -1)
+    {
+        printf("cd: %s: %s\n", dir, strerror(errno));
+
+    }
+}
 
 int str_exec_num(char *input, int index, char *histarr[])
 {
@@ -124,6 +147,36 @@ int add_history(char *histarr[20], int commandIndex, char *command)
   return commandIndex = (commandIndex + 1) % 20;
 }
 
+void print_history(char *histarr[20], int commandIndex) {
+  //check if history is empty
+  if (histarr[0] == NULL) {
+      printf("No commands in history.\n");
+      return;
+  }
+
+  // count starts from one since histroy printed from 1 to 20
+  int count = 1;
+
+  //checking history has wrapped around
+  if (histarr[19] != NULL && commandIndex < 19) {
+      for (int tail = commandIndex; tail < 20; tail++) {
+          printf("%d: %s\n", count++, histarr[tail]);
+      }
+      for (int start = 0; start < commandIndex; start++) {
+          printf("%d: %s\n", count++, histarr[start]);
+      }
+  } else { 
+      //for loop like normal if history hasn't wrapped around
+      for (int i = 0; i < 20; i++) {
+          int index = (commandIndex + i) % 20;
+          //making sure it isnt printing null value
+          if (histarr[index] != NULL) {
+              printf("%d: %s\n", count++, histarr[index]);
+          }
+      }
+  }
+}
+
 void tokenise(char *tokensarr[], char *line)
 {
   // tolkenises the line string by provided delimeters e.g (" \t|><&;")
@@ -137,9 +190,6 @@ void tokenise(char *tokensarr[], char *line)
   {
     // store token in array
     tokensarr[toki] = token;
-
-    // this print shows tolkens
-    // printf("%s", token);
 
     // go to next token
     token = strtok(NULL, " \t|><&;\n");
@@ -173,8 +223,6 @@ int getFromFile(char *histarr[20], char *origDir)
     return 0;
   }
 
-  printf("History.txt opened\n");
-
   // Temporary buffer for read in line
   char buffer[512];
 
@@ -184,10 +232,8 @@ int getFromFile(char *histarr[20], char *origDir)
   while (i < 20 && fgets(buffer, sizeof(buffer), fptr))
   {
 
-    // convert the read in line to pointer for using in our addhistory function
-    char *bufpoint = buffer;
     // add read in line to history
-    add_history(histarr, i, bufpoint);
+    add_history(histarr, i, buffer);
 
     i++;
   }
@@ -228,9 +274,6 @@ void sendToFile(int commandindex, char *histarr[20], char *origdir)
 
     while (histarr[i] != NULL)
     {
-
-      // print array items to double check has stuff
-      // printf("histarr[%d]: %s\n", i, histarr[i]);
 
       fprintf(fptr, "%s", histarr[i]);
 
@@ -285,17 +328,17 @@ void addToAlias(char *alias[10][2], char *name, char *command)
       {
         printf("Error alias already exists overwriting\n");
 
-         // free malloc
-         free(alias[i][0]);
-         free(alias[i][1]);
+        // free malloc
+        free(alias[i][0]);
+        free(alias[i][1]);
 
-          // malloc array location for size of the input
-         alias[i][0] = malloc(strlen(name) + 1);
-         alias[i][1] = malloc(strlen(command) + 1);
-   
-         // copy input to array
-         strcpy(alias[i][0], name);
-         strcpy(alias[i][1], command);
+        // malloc array location for size of the input
+        alias[i][0] = malloc(strlen(name) + 1);
+        alias[i][1] = malloc(strlen(command) + 1);
+
+        // copy input to array
+        strcpy(alias[i][0], name);
+        strcpy(alias[i][1], command);
 
         return;
       }
@@ -345,7 +388,7 @@ void removeAlias(char *alias[10][2], char *name)
       if (strcmp(alias[i][0], name) == 0)
       {
 
-       printf("Removing alias %s\n", alias[i][0]);
+        printf("Removing alias %s\n", alias[i][0]);
         // free malloc
         free(alias[i][0]);
         free(alias[i][1]);
@@ -462,8 +505,6 @@ void loadAliasFile(char *alias[10][2], char *origdir)
   // while index < 20 and line is succesfully read from file
   while (i < 10 && fgets(buffer, sizeof(buffer), fptr))
   {
-
-    // tokenise from read in line (buffer)
 
     // take name/alias as first thing delimted by a space
     char *name = strtok(buffer, " ");

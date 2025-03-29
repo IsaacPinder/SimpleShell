@@ -2,48 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header.h"
-#include <unistd.h>    // fork, execl
-#include <sys/types.h> // pid_t datatype
-#include <sys/wait.h>  // wait
-#include <errno.h>     // errno
+#include <unistd.h>    
+#include <sys/types.h> 
+#include <sys/wait.h>  
+#include <errno.h>     
 
 // ** Commands for compiling and running **
 // gcc simpleshell.c helpers.c localfunctions.c -pedantic -Wall -o simpleshell
 /// ./simpleshell
 
 // NOTES FOR QUALITY CHECK
-// remove redundent commented code
-// tidy up comments
-// remove prints for testing
-// (DONE) remove pre defined functions which we made (aslong as dostn break anything)
-// (DONE)tidy up comments(comment everything)
-// tidy up what belongs in helpers v localfunctions
+// Double check evrything
+// edge case where calling a history function gives error from fork when history empty
 
-// QUESTIONS
-// (DONE, TEST) do we have to free our allocated mallocs(that are saved to files, when we exit)?????? ( yes always)
-// (DONE)when ctrl d pressed do add to history (no handeled before checked same time as checking less than 512, exit can be added but must be justified if it is or isnt)
-// (DONE TEST)file paths????? for specefic machine .aliases??? .hist_list??? (make fieles definable use home directory insted of what weve got(hm dir /file) also change to histlist, snprintf for joining home directory and text file)
-// is include
-// fix print hist
-
-// STAGE1 FINAL TEST ?Is the input tokenized correctly (try ‘ls<tab>-lF;.&..>.<..|/<tab>fksdk’
-// it should print an error for fksdk and the listings of . and .. twice plus the
-// listing of / all formatted with entry per line and file permissions)?
 
 int main(void)
 {
   // int exit to for use in main loop to determine if we should continue running
   int exitloop = 0;
-
-  // pointer to strings for use with strcmp to compare input to
-  char *exitstr = "exit";
-  char *getpathstr = "getpath";
-  char *setpathstr = "setpath";
-  char *cdstr = "cd";
-  char *histstr = "history";
-  char *execprevstr = "!!";
-  char *addaliasstr = "alias";
-  char *unaliasstr = "unalias";
+  
 
   // array to hold 20 history items set items to null (so history is empty at start)
   char *history[20] = {NULL};
@@ -57,9 +34,6 @@ int main(void)
   char *origDir = malloc(strlen(getenv("HOME")) + 1);
   strcpy(origDir, getenv("HOME"));
 
-  // print home and success status of changing to home
-  printf("\nHomeDir : %s \n\n", origDir);
-  printf(" chdir to home success? 0 good: %d \n\n", chdir(origDir));
 
   // load history and alias arrays from file
   commandIndex = getFromFile(history, origDir);
@@ -146,11 +120,11 @@ int main(void)
       tokenise(tokensarr, temp);
     }
 
-    // handles history commands this ensures that wont try and run a history command and normal command
+    // handles history commands this ensures that wont try and run a history command and normal command at same time
     if (line[0] == '!')
     {
       // EXECUTE-PREVIOUS checking input isnt empty AND first token is "!!"
-      if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], execprevstr) == 0)
+      if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "!!") == 0)
       {
         if (tokensarr[1] != NULL)
         {
@@ -165,7 +139,6 @@ int main(void)
         else
         {
           char *histexecline = history[(commandIndex - 1) % 20];
-          printf("current line to execute from hist %s \n", histexecline);
 
           // use temp copy of histexecline so that we dont alter(tokenise) the original array
           char temp[512];
@@ -197,8 +170,6 @@ int main(void)
           }
           else
           {
-            printf("current line to execute from hist %s \n", histexecline);
-
             // use temp copy of histexecline so that we dont alter(tokenise) the original array
             char temp[512];
             strcpy(temp, histexecline);
@@ -231,7 +202,6 @@ int main(void)
           }
           else
           {
-            printf("current line to execute from hist %s \n", histexecline);
 
             // use temp copy of histexecline so that we dont alter(tokenise) the originasl array
             char temp[512];
@@ -243,12 +213,12 @@ int main(void)
     }
 
     // EXIT: User input is NOT empty AND first token is "exit" AND second is empty then done looping
-    if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], exitstr) == 0 && tokensarr[1] == NULL)
+     if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "exit") == 0 && tokensarr[1] == NULL)
     {
       exitloop = 1;
     }
     // GETPATH: checking input isn't empty AND first token is "getpath"
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], getpathstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "getpath") == 0)
     {
       // if too many arguments (2nd token not empty) print error
       if (tokensarr[1] != NULL)
@@ -262,7 +232,7 @@ int main(void)
       }
     }
     // SETPATH: checking input isnt empty AND first token is "setpath"
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], setpathstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "setpath") == 0)
     {
       // if no path argument (2nd token empty) print error
       if (tokensarr[1] == NULL)
@@ -285,7 +255,7 @@ int main(void)
       }
     }
     // CD: checking input isnt empty AND first token is "cd"
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], cdstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "cd") == 0)
     {
       // if no arguments (2nd token empty) change to home directory
       if (tokensarr[1] == NULL)
@@ -306,7 +276,7 @@ int main(void)
       }
     }
     // HISTORY checking input isnt empty AND first token is "history"
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], histstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "history") == 0)
     {
       if (tokensarr[1] != NULL)
       {
@@ -319,14 +289,14 @@ int main(void)
       }
     }
     // ALIAS checking input isnt empty AND first token is "alias"
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], addaliasstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "alias") == 0)
     {
-      // if only alias then call printAlias
+      // if only one token 'alias' then call printAlias
       if (tokensarr[1] == NULL)
       {
         printAlias(alias);
       }
-      // attempting to add alais not enough arguments
+      // attempting to add alias not enough arguments
       else if (tokensarr[2] == NULL)
       {
         // not enough arguments
@@ -358,7 +328,7 @@ int main(void)
       }
     }
     // UNALIAS checking input isnt empty AND first token is "unalias"
-    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], unaliasstr) == 0)
+    else if ((tokensarr[0] != NULL) && strcmp(tokensarr[0], "unalias") == 0)
     {
 
       // not enough arguments

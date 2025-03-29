@@ -66,7 +66,7 @@ int main(void)
     tokenise(tokensarr, line);
 
     // dont try to invoke an alias if user is trying to add or remove an alias
-    if (strcmp(tokensarr[0], "alias") != 0 && strcmp(tokensarr[0], "unalias") != 0)
+    if ( tokensarr[0] != NULL && strcmp(tokensarr[0], "alias") != 0 && strcmp(tokensarr[0], "unalias") != 0)
     {
 
       // loop through alias list
